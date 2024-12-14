@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { redirect, useParams } from "next/navigation";
 import { Input } from "@nextui-org/input";
 import { Progress } from "@nextui-org/progress";
@@ -13,7 +13,7 @@ import { useAuth } from "@/context/authContext";
 export default function Page() {
   const { id: sessionId } = useParams<{ id: string }>();
   const { user, loading } = useAuth();
-  
+
   const [step, setStep] = useState(1); // Keeps track of the current step
   const [meal, setMeal] = useState("");
   const [votes, setVotes] = useState<GuestVote>({

@@ -30,11 +30,11 @@ export interface Session {
   guests: Guest[];
   status: SessionStatus;
   results?: {
-      location: number;
-      service: number;
-      menu: number;
-      bill: number;
-      pizzaDough: number;
-      ingredients: number;
+    location: number;
+    service: number;
+    menu: number;
+    bill: number;
+    pizzaDough: number;
+    ingredients: number;
   };
 }

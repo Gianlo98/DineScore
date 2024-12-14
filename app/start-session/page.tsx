@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { redirect } from "next/navigation";
+
 import { createVotingSession } from "@/actions/firebaseFunctions";
 import { SessionStatus } from "@/types";
-import { redirect } from 'next/navigation'
 
 export default function StartSession() {
   const [name, setName] = useState("");
@@ -19,16 +20,20 @@ export default function StartSession() {
       status: "open" as SessionStatus,
     };
 
-    const s = await createVotingSession(session)
-    console.log("Session created", s);
-    redirect(`/session/${s.id}`)
+    const s = await createVotingSession(session);
 
+    console.log("Session created", s);
+    redirect(`/session/${s.id}`);
   };
 
   return (
     <div>
       <h1>Start a Voting Session</h1>
-      <input placeholder="Session Name" value={name} onChange={(e) => setName(e.target.value)} />
+      <input
+        placeholder="Session Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
       <input
         placeholder="Number of Guests"
         type="number"
