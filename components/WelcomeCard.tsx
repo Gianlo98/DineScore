@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Avatar } from "@nextui-org/avatar";
 import { Button } from "@nextui-org/button";
 import { useRouter } from "next/navigation";
@@ -13,21 +14,36 @@ export default function ProtectedPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
-  if (loading) return <p>Loading...</p>;
+  const phrases = [
+    "🍕 Slice into your journey! sign up now and pile on those tasty scores!",
+    "🍕 Hungry for high scores? Join us and let's serve up some cheesy perfection!",
+    "🍕 Ready to top your life with something delicious? Sign up and dig into your scores!",
+    "🍕 Fire up the oven, sign up, and let's bake your scores to perfection!",
+    "🍕 Roll out the dough of destiny! join now to keep track of your score toppings!",
+    "🍕 Don't just taste, track! Sign in to slice up your scores and share the pizza love.",
+    "🍕 Let's toss out excuses and toss in some fun—sign up and start scoring!",
+    "🍕 Score big, slice by slice! jump in now to see how high you can top your table!",
+    "🍕 Extra cheese, extra fun! sign up to save every last crumb of your dining journey!",
+    "🍕 We've got the crust, you bring the hunger! join now and let's dish out those scores!",
+  ];
+
+  const [randomPhrase, setRandomPhrase] = useState("");
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * phrases.length);
+
+    setRandomPhrase(phrases[randomIndex]);
+  }, []);
+
+  if (loading) return;
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       {user === null ? (
         <>
           <div className="inline-block max-w-xl text-center justify-center">
-            <span className={title()}>DineScore</span>
+            <span className={title()}>{randomPhrase}</span>
           </div>
-          <div className="inline-block max-w-xl text-center justify-center">
-            <span className={title()}>
-              Heeeeey! LogIn to save your scores!{" "}
-            </span>
-          </div>
-
           <GoogleButton />
         </>
       ) : (
@@ -40,7 +56,6 @@ export default function ProtectedPage() {
           <span className={title()}>
             👋 Welcome back, {user.displayName || "User"}!
           </span>
-
           <Button
             className="mt-5"
             onPress={() => router.push("/start-session")}
