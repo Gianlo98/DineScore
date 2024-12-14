@@ -1,23 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { addGuest } from "@/actions/firebaseFunctions";
 import { useParams } from "next/navigation";
+import { Guest, GuestVote } from "@/types";
+import { Input } from "@nextui-org/input";
+import { Progress } from "@nextui-org/progress";
+import { Card } from "@nextui-org/card";
+import { Spacer } from "@nextui-org/spacer";
+import { Button } from "@nextui-org/button";
 
 export default function Page() {
   const { id: sessionId } = useParams<{ id: string }>();
 
-  // Form state
   const [step, setStep] = useState(0); // Keeps track of the current step
   const [name, setName] = useState("");
   const [meal, setMeal] = useState("");
-  const [votes, setVotes] = useState<Record<string, number>>({
-    location: 0,
-    service: 0,
-    menu: 0,
-    bill: 0,
-    pizzaDough: 0,
-    ingredients: 0,
+  const [votes, setVotes] = useState<GuestVote>({
+    location: -1,
+    service: -1,
+    menu: -1,
+    bill: -1,
+    pizzaDough: -1,
+    ingredients: -1,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -30,82 +35,107 @@ export default function Page() {
     { key: "ingredients", question: "Rate the ingredients (1-5):" },
   ];
 
-  const handleNextStep = (value: string | number) => {
-    if (step === 0) {
-      setName(value as string);
-    } else if (step === 1) {
-      setMeal(value as string);
-    } else {
+  const handleNextStep = (value?: number | string) => {
+    if (step > 1 && value !== undefined) {
       const voteKey = questions[step - 2].key;
+      console.log("Setting vote for", voteKey, "to", value);
       setVotes((prevVotes) => ({
         ...prevVotes,
-        [voteKey]: Number(value),
-      }));
+        [voteKey]: value,
+      }))
     }
 
-    if (step === questions.length + 1) {
-      handleSubmit();
-    } else {
-      setStep(step + 1);
-    }
+    setStep(step + 1);
   };
+
+  useEffect(() => {
+    if (step === questions.length + 2) {
+      handleSubmit();
+    }
+  }, [step])
 
   const handleSubmit = async () => {
-    const guest = { name, meal, votes };
-    await addGuest(sessionId, guest);
-    setIsSubmitted(true);
+    const guest: Guest = {
+      name: name,
+      meal: meal,
+      votes,
+    };
+
+    try {
+      console.log("Submitting guest data:", guest);
+      await addGuest(sessionId, guest);
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting guest data:", error);
+    }
   };
 
-  return (
-    <div>
-      {!isSubmitted ? (
-        <>
-          <h1>Vote for Session {sessionId}</h1>
+  return (<>
 
-          {step === 0 && (
-            <div>
-              <label>Your Name:</label>
-              <input
-                placeholder="Enter your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <button onClick={() => handleNextStep(name)}>Next</button>
-            </div>
-          )}
+    {step < questions.length + 2 ? (
+      <>
+        <Progress
+          value={(step / (questions.length + 2)) * 100}
+          color="primary"
 
-          {step === 1 && (
-            <div>
-              <label>Your Meal:</label>
-              <input
-                placeholder="Enter the meal you had"
-                value={meal}
-                onChange={(e) => setMeal(e.target.value)}
-              />
-              <button onClick={() => handleNextStep(meal)}>Next</button>
-            </div>
-          )}
+        />
+        <Spacer y={1.5} />
 
-          {step > 1 && step <= questions.length + 1 && (
-            <div>
-              <label>{questions[step - 2].question}</label>
-              <input
-                type="number"
-                min="1"
-                max="5"
-                onChange={(e) => handleNextStep(e.target.value)}
-              />
-              <button
-                onClick={() => handleNextStep((votes[questions[step - 2].key] as number) || 0)}
-              >
-                Next
-              </button>
+        {step === 0 && (
+          <div>
+            <Input
+              label="Your Name"
+              placeholder="Enter your name"
+              fullWidth
+              value={name}
+              onChange={e => setName(e.target.value)}
+            />
+            <Spacer y={1} />
+            <Button onClick={() => handleNextStep()} fullWidth>
+              Next
+            </Button>
+          </div>
+        )}
+
+        {step === 1 && (
+          <div>
+            <Input
+              label="Your Meal"
+              placeholder="Enter the meal you had"
+              fullWidth
+              value={meal}
+              onChange={e => setMeal(e.target.value)}
+            />
+            <Spacer y={1} />
+            <Button onClick={() => handleNextStep()} fullWidth>
+              Next
+            </Button>
+          </div>
+        )}
+
+        {step > 1 && step <= questions.length + 1 && (
+          <div>
+            <h3 className="text-center">{questions[step - 2].question}</h3>
+            <Spacer y={1} />
+            <div className="flex justify-center gap-2">
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button
+                  key={value}
+                  onClick={() => handleNextStep(value)}
+                  className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600 focus:outline-none focus:ring focus:ring-primary-300"
+                >
+                  {value}
+                </button>
+              ))}
             </div>
-          )}
-        </>
-      ) : (
+          </div>
+        )}
+      </>
+    ) : (
+      <div className="text-center">
         <h2>Waiting for other results...</h2>
-      )}
-    </div>
+      </div>
+    )}
+  </>
   );
 }

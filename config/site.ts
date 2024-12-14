@@ -10,7 +10,7 @@ export const siteConfig = {
     },
     {
       label: "Start Session",
-      href: "/docs",
+      href: "/start-session",
     }
   ],
   navMenuItems: []

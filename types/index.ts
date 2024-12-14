@@ -7,14 +7,16 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 export interface Guest {
   name: string;
   meal: string;
-  votes: {
-      location: number;
-      service: number;
-      menu: number;
-      bill: number;
-      pizzaDough: number;
-      ingredients: number;
-  };
+  votes: GuestVote;
+}
+
+export interface GuestVote {
+  location: number;
+  service: number;
+  menu: number;
+  bill: number;
+  pizzaDough: number;
+  ingredients: number;
 }
 
 export type SessionStatus = "open" | "closed";
