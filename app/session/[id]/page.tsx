@@ -36,16 +36,17 @@ export default function Page() {
   ];
 
   const handleNextStep = (value?: number | string) => {
+    console.log("Handling next step with value:", value);
     if (step > 1 && value !== undefined) {
       const voteKey = questions[step - 2].key;
       console.log("Setting vote for", voteKey, "to", value);
       setVotes((prevVotes) => ({
         ...prevVotes,
         [voteKey]: value,
-      }))
+      }));
     }
 
-    setStep(step + 1);
+    setStep((prevStep) => prevStep + 1);
   };
 
   useEffect(() => {
@@ -93,9 +94,12 @@ export default function Page() {
             onChange={e => setName(e.target.value)}
           />
           <Spacer y={1} />
-          <Button onClick={() => handleNextStep()} fullWidth>
+          <button
+            onClick={() => handleNextStep(1)}
+            className="w-full px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300"
+          >
             Next
-          </Button>
+          </button>
         </div>
       )}
 
@@ -109,9 +113,12 @@ export default function Page() {
             onChange={e => setMeal(e.target.value)}
           />
           <Spacer y={1} />
-          <Button onClick={() => handleNextStep()} fullWidth>
+          <button
+            onClick={() => handleNextStep(1)}
+            className="w-full px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300"
+          >
             Next
-          </Button>
+          </button>
         </div>
       )}
 
@@ -122,9 +129,10 @@ export default function Page() {
           <div className="flex justify-center gap-2">
             {[1, 2, 3, 4, 5].map((value) => (
               <button
+                type="button"
                 key={value}
                 onClick={() => handleNextStep(value)}
-                className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600 focus:outline-none focus:ring focus:ring-primary-300"
+                className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600 :outline-none focus:ring focus:ring-primary-300"
               >
                 {value}
               </button>
