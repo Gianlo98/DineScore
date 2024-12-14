@@ -10,7 +10,7 @@ import { useParams } from "next/navigation";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig"; // Replace with your Firebase config path
 
-export default function ResultsPage({ params }: { params: { id: string } }) {
+export default function ResultsPage() {
     const { id: sessionId } = useParams<{ id: string }>();
 
     const [session, setSession] = useState<Session | null>(null);
@@ -31,7 +31,7 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
     }, [sessionId]);
 
     useEffect(() => {
-        if (session && session.guests.length === session.numberOfGuests) {
+        if (session && session.guests.length >= session.numberOfGuests) {
             calculateAverages();
         }
     }, [session]);
@@ -49,6 +49,9 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
             },
             {} as Record<string, number>
         );
+
+        console.log("Totals", totals);
+        console.log("Session", session);
 
         const averages = Object.keys(totals).reduce((acc, key) => {
             acc[key] = totals[key] / session.guests.length;

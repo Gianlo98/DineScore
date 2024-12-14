@@ -2,7 +2,7 @@
 
 import { SetStateAction, useEffect, useState } from "react";
 import { addGuest } from "@/actions/firebaseFunctions";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { Guest, GuestVote } from "@/types";
 import { Input } from "@nextui-org/input";
 import { Progress } from "@nextui-org/progress";
@@ -70,72 +70,68 @@ export default function Page() {
     }
   };
 
-  return (<>
+  if (isSubmitted) {
+    redirect(`/session/${sessionId}/results`);
+  }
 
-    {step < questions.length + 2 ? (
-      <>
-        <Progress
-          value={(step / (questions.length + 2)) * 100}
-          color="primary"
+  return (
+    <>
+      <Progress
+        value={(step / (questions.length + 2)) * 100}
+        color="primary"
 
-        />
-        <Spacer y={1.5} />
+      />
+      <Spacer y={1.5} />
 
-        {step === 0 && (
-          <div>
-            <Input
-              label="Your Name"
-              placeholder="Enter your name"
-              fullWidth
-              value={name}
-              onChange={e => setName(e.target.value)}
-            />
-            <Spacer y={1} />
-            <Button onClick={() => handleNextStep()} fullWidth>
-              Next
-            </Button>
+      {step === 0 && (
+        <div>
+          <Input
+            label="Your Name"
+            placeholder="Enter your name"
+            fullWidth
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
+          <Spacer y={1} />
+          <Button onClick={() => handleNextStep()} fullWidth>
+            Next
+          </Button>
+        </div>
+      )}
+
+      {step === 1 && (
+        <div>
+          <Input
+            label="Your Meal"
+            placeholder="Enter the meal you had"
+            fullWidth
+            value={meal}
+            onChange={e => setMeal(e.target.value)}
+          />
+          <Spacer y={1} />
+          <Button onClick={() => handleNextStep()} fullWidth>
+            Next
+          </Button>
+        </div>
+      )}
+
+      {step > 1 && step <= questions.length + 1 && (
+        <div>
+          <h3 className="text-center">{questions[step - 2].question}</h3>
+          <Spacer y={1} />
+          <div className="flex justify-center gap-2">
+            {[1, 2, 3, 4, 5].map((value) => (
+              <button
+                key={value}
+                onClick={() => handleNextStep(value)}
+                className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600 focus:outline-none focus:ring focus:ring-primary-300"
+              >
+                {value}
+              </button>
+            ))}
           </div>
-        )}
-
-        {step === 1 && (
-          <div>
-            <Input
-              label="Your Meal"
-              placeholder="Enter the meal you had"
-              fullWidth
-              value={meal}
-              onChange={e => setMeal(e.target.value)}
-            />
-            <Spacer y={1} />
-            <Button onClick={() => handleNextStep()} fullWidth>
-              Next
-            </Button>
-          </div>
-        )}
-
-        {step > 1 && step <= questions.length + 1 && (
-          <div>
-            <h3 className="text-center">{questions[step - 2].question}</h3>
-            <Spacer y={1} />
-            <div className="flex justify-center gap-2">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <button
-                  key={value}
-                  onClick={() => handleNextStep(value)}
-                  className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600 focus:outline-none focus:ring focus:ring-primary-300"
-                >
-                  {value}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </>
-    ) : (
-      <div className="text-center">
-        <h2>Waiting for other results...</h2>
-      </div>
-    )}
-  </>
+        </div>
+      )}
+    </>
   );
 }
