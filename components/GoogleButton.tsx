@@ -8,10 +8,9 @@ import { auth, googleProvider } from "@/firebase/firebaseConfig";
 export default function GoogleButton() {
   const handleGoogleSignIn = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log("User signed in:", result.user);
+      await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error("Error signing in with Google:", error);
+      console.error(error);
     }
   };
 
