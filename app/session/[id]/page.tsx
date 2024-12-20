@@ -7,6 +7,7 @@ import { Progress } from "@nextui-org/progress";
 import { Spacer } from "@nextui-org/spacer";
 import { Form } from "@nextui-org/form";
 import { Button } from "@nextui-org/button";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 import { Guest, GuestVote } from "@/types";
 import { useAuth } from "@/context/authContext";
@@ -44,6 +45,27 @@ export default function Page() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (step === 1) {
       setMeal(e.target.value);
+    }
+  };
+
+  const getAnimation = () => {
+    switch (step) {
+      case 1:
+        return "/animations/meal.lottie";
+      case 2:
+        return "/animations/location.lottie";
+      case 3:
+        return "/animations/service.lottie";
+      case 4:
+        return "/animations/menu.lottie";
+      case 5:
+        return "/animations/bill.lottie";
+      case 6:
+        return "/animations/pizzaDough.lottie";
+      case 7:
+        return "/animations/ingredients.lottie";
+      default:
+        return "/animations/summary.lottie";
     }
   };
 
@@ -100,9 +122,20 @@ export default function Page() {
 
   return (
     <div className="text-center">
-      <h1 className="text-2xl font-medium">
-        Your experience at {currentSession.name}
-      </h1>
+      <div className="flex flex-col items-center justify-center gap-4">
+        <div className="px-4 rounded-lg shadow-md">
+          <DotLottieReact
+            autoplay
+            loop
+            backgroundColor="transparent"
+            className="w-full mx-auto"
+            src={getAnimation()}
+          />
+        </div>
+        <h1 className="text-2xl font-medium">
+          Your experience at {currentSession.name}
+        </h1>
+      </div>
       <Form
         className="w-full max-w-xs flex flex-col gap-4 py-8 mx-auto"
         validationBehavior="native"
