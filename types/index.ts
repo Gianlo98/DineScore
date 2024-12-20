@@ -9,6 +9,7 @@ export interface Guest {
   meal: string;
   votes: GuestVote;
   photoURL?: string;
+  uid?: string;
 }
 
 export interface GuestVote {

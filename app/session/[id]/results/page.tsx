@@ -90,7 +90,7 @@ export default function ResultsPage() {
   }, [averages, loading]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex justify-center items-center">
       <Card className="max-w-md w-full p-6">
         {loading ? (
           <h2 className="text-center text-xl">Loading...</h2>
