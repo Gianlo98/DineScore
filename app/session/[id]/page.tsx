@@ -174,7 +174,7 @@ export default function Page() {
                       ? "primary"
                       : "default"
                   }
-                  onClick={() => {
+                  onPress={() => {
                     setVotes((prevVotes) => ({
                       ...prevVotes,
                       [questions[step - 2].key]: index + 1,
@@ -208,7 +208,7 @@ export default function Page() {
             <Button
               color="default"
               type="button"
-              onClick={() => setStep((prevStep) => prevStep - 1)}
+              onPress={() => setStep((prevStep) => prevStep - 1)}
             >
               Back
             </Button>
@@ -217,7 +217,7 @@ export default function Page() {
             className="w-full"
             color="primary"
             type={step === questions.length + 2 ? "submit" : "button"}
-            onClick={() =>
+            onPress={() =>
               step !== questions.length + 2 &&
               setStep((prevStep) => prevStep + 1)
             }
