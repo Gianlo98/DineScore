@@ -58,7 +58,7 @@ export default function ProtectedPage() {
           </span>
           <Button
             className="mt-5"
-            onPress={() => router.push("/start-session")}
+            onPress={() => router.push("/session")}
           >
             Start a New Session
           </Button>
