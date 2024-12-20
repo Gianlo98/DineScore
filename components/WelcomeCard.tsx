@@ -56,10 +56,7 @@ export default function ProtectedPage() {
           <span className={title()}>
             👋 Welcome back, {user.displayName || "User"}!
           </span>
-          <Button
-            className="mt-5"
-            onPress={() => router.push("/session")}
-          >
+          <Button className="mt-5" onPress={() => router.push("/session")}>
             Start a New Session
           </Button>
         </div>
