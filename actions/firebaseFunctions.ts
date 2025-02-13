@@ -13,19 +13,21 @@ import {
 import { db } from "../firebase/firebaseConfig";
 import { Session, Guest } from "../types";
 
+export const SESSION_COLLECTION =
+  process.env.NEXT_PUBLIC_DATA_STORE_BUCKET ?? "test" + "-sessions";
+
 // Create a new session
 export const createVotingSession = async (
   session: Session,
 ): Promise<Session> => {
   try {
-    const docRef = await addDoc(collection(db, "sessions"), session);
+    const docRef = await addDoc(collection(db, SESSION_COLLECTION), session);
 
     return {
       ...session,
       id: docRef.id,
     };
   } catch (e) {
-    console.error("Error adding document: ", e);
     throw e;
   }
 };
@@ -35,7 +37,7 @@ export const addGuest = async (
   sessionId: string,
   guest: Guest,
 ): Promise<void> => {
-  const sessionRef = doc(db, "sessions", sessionId);
+  const sessionRef = doc(db, SESSION_COLLECTION, sessionId);
 
   await updateDoc(sessionRef, {
     guests: arrayUnion(guest),
@@ -43,8 +45,7 @@ export const addGuest = async (
 };
 
 export const fetchSessions = async (): Promise<Session[]> => {
-  console.log("Fetching sessions");
-  const sessionsRef = collection(db, "sessions");
+  const sessionsRef = collection(db, SESSION_COLLECTION);
   const querySnapshot = await getDocs(sessionsRef);
 
   const sessions: Session[] = querySnapshot.docs.map(
@@ -58,7 +59,7 @@ export const fetchSessions = async (): Promise<Session[]> => {
 export const fetchSession = async (
   sessionId: string,
 ): Promise<Session | null> => {
-  const sessionRef = doc(db, "sessions", sessionId);
+  const sessionRef = doc(db, SESSION_COLLECTION, sessionId);
   const sessionSnap = await getDoc(sessionRef);
 
   if (sessionSnap.exists()) {

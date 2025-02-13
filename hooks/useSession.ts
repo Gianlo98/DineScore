@@ -9,13 +9,14 @@ import {
 
 import { db } from "@/firebase/firebaseConfig";
 import { Guest, Session } from "@/types";
+import { SESSION_COLLECTION } from "@/actions/firebaseFunctions";
 
 export const useSession = (sessionId: string) => {
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   const subscribeToSession = useCallback(() => {
-    const sessionDoc = doc(db, "sessions", sessionId);
+    const sessionDoc = doc(db, SESSION_COLLECTION, sessionId);
 
     return onSnapshot(
       sessionDoc,
@@ -38,7 +39,7 @@ export const useSession = (sessionId: string) => {
 
   const fetchSession = useCallback(async () => {
     setIsLoading(true);
-    const sessionDoc = doc(db, "sessions", sessionId);
+    const sessionDoc = doc(db, SESSION_COLLECTION, sessionId);
 
     try {
       const snapshot = await getDoc(sessionDoc);
@@ -60,13 +61,12 @@ export const useSession = (sessionId: string) => {
 
   const addGuest = useCallback(
     async (guest: Guest) => {
-      const sessionDoc = doc(db, "sessions", sessionId);
+      const sessionDoc = doc(db, SESSION_COLLECTION, sessionId);
 
       try {
         await updateDoc(sessionDoc, {
           guests: arrayUnion(guest),
         });
-        console.log("Guest added successfully!");
       } catch (error) {
         console.error("Error adding guest:", error);
       }

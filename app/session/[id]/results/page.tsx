@@ -11,6 +11,7 @@ import { Avatar, AvatarGroup } from "@heroui/avatar";
 
 import { Session } from "@/types";
 import { db } from "@/firebase/firebaseConfig";
+import { SESSION_COLLECTION } from "@/actions/firebaseFunctions";
 
 export default function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>();
@@ -22,7 +23,7 @@ export default function ResultsPage() {
   const [displayIndex, setDisplayIndex] = useState(0); // To control suspense effect
 
   useEffect(() => {
-    const sessionRef = doc(db, "sessions", sessionId);
+    const sessionRef = doc(db, SESSION_COLLECTION, sessionId);
 
     const unsubscribe = onSnapshot(sessionRef, (doc) => {
       if (doc.exists()) {

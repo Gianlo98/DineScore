@@ -41,7 +41,7 @@ export default function Page() {
     key: keyof GuestVote;
     question: string;
   }[] = [
-    { key: "location", question: "Location"},
+    { key: "location", question: "Location" },
     { key: "service", question: "Service" },
     { key: "menu", question: "Menu" },
     { key: "bill", question: "Bill" },
