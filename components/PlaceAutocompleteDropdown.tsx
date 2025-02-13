@@ -111,9 +111,8 @@ export default function PlaceAutocompleteDropdown({
     }
     setLoading(true);
     const timer = setTimeout(() => {
-      // Filter by restaurants only.
       autocompleteService.current?.getPlacePredictions(
-        { input: inputValue, types: ["restaurant"] },
+        { input: inputValue, types: ["restaurant"], locationBias: "IP_BIAS" },
         (preds, status) => {
           setLoading(false);
           if (
@@ -121,7 +120,6 @@ export default function PlaceAutocompleteDropdown({
             preds
           ) {
             setPredictions(preds);
-            // For each prediction, request details (if not already cached)
             preds.forEach((prediction) => {
               if (
                 !detailsMap[prediction.place_id] &&
@@ -164,7 +162,6 @@ export default function PlaceAutocompleteDropdown({
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     onChange && onChange(e.target.value);
-    // Clear any previously selected place_id when user types new text.
     setSelectedPlaceId(null);
   };
 
@@ -172,12 +169,9 @@ export default function PlaceAutocompleteDropdown({
     const details = detailsMap[prediction.place_id];
     const place_name = details?.name || prediction.description;
 
-    // Update the input with the selected place name.
     setInputValue(place_name);
     setPredictions([]);
-    // Save the selected place_id.
     setSelectedPlaceId(prediction.place_id);
-    // Return both the place_id and place_name.
     onSelect && onSelect({ place_id: prediction.place_id, place_name });
   };
 
@@ -200,7 +194,7 @@ export default function PlaceAutocompleteDropdown({
         }}
         defaultItems={predictions}
         inputProps={{
-          name, // for form integration
+          name,
           value: inputValue,
           onChange: handleInputChange,
           onKeyDown: handleKeyDown,
