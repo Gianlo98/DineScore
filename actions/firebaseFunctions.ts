@@ -13,8 +13,7 @@ import {
 import { db } from "../firebase/firebaseConfig";
 import { Session, Guest } from "../types";
 
-export const SESSION_COLLECTION =
-  process.env.NEXT_PUBLIC_DATA_STORE_BUCKET ?? "test" + "-sessions";
+import { SESSION_COLLECTION } from "@/config/firebaseStorage";
 
 // Create a new session
 export const createVotingSession = async (

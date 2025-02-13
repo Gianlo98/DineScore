@@ -6,12 +6,21 @@ import { Card } from "@heroui/card";
 import { Spacer } from "@heroui/spacer";
 import { useParams } from "next/navigation";
 import { doc, onSnapshot } from "firebase/firestore";
-import { motion } from "framer-motion";
 import { Avatar, AvatarGroup } from "@heroui/avatar";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@heroui/table";
 
 import { Session } from "@/types";
 import { db } from "@/firebase/firebaseConfig";
-import { SESSION_COLLECTION } from "@/actions/firebaseFunctions";
+import { SESSION_COLLECTION } from "@/config/firebaseStorage";
+import { QUESTIONS } from "@/config/questions";
+import { TextEffect } from "@/components/ui/text-effect";
 
 export default function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>();
@@ -20,7 +29,7 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState(true);
   const [averages, setAverages] = useState<Record<string, number>>({});
   const [totalAverage, setTotalAverage] = useState<number | null>(null);
-  const [displayIndex, setDisplayIndex] = useState(0); // To control suspense effect
+  const [displayIndex, setDisplayIndex] = useState(0);
 
   useEffect(() => {
     const sessionRef = doc(db, SESSION_COLLECTION, sessionId);
@@ -73,7 +82,6 @@ export default function ResultsPage() {
     );
 
     setTotalAverage(total / Object.keys(averages).length);
-
     setAverages(averages);
   };
 
@@ -90,68 +98,124 @@ export default function ResultsPage() {
     }
   }, [averages, loading]);
 
+  const sortedGuests = session
+    ? [...session.guests].sort((a, b) => {
+        const totalVotesA = Object.values(a.votes).reduce(
+          (acc, vote) => acc + vote,
+          0,
+        );
+        const totalVotesB = Object.values(b.votes).reduce(
+          (acc, vote) => acc + vote,
+          0,
+        );
+
+        return totalVotesB - totalVotesA;
+      })
+    : [];
+
   return (
     <div className="flex justify-center items-center">
-      <Card className="max-w-md w-full p-6">
-        {loading ? (
-          <h2 className="text-center text-xl">Loading...</h2>
-        ) : session && session.guests.length < session.numberOfGuests ? (
-          <>
-            <div className="flex flex-col items-center mb-4">
-              <AvatarGroup isBordered>
-                {session.guests.map((guest) => (
-                  <Avatar key={guest.name} src={guest.photoURL} />
-                ))}
-              </AvatarGroup>
-            </div>
-            <Progress
-              color="primary"
-              value={(session.guests.length / session.numberOfGuests) * 100}
-            />
-            <Spacer y={1.5} />
-            <h2 className="text-center text-xl">
-              Waiting for all guests to vote...
-            </h2>
-            <p className="text-center">
-              {session.guests.length} / {session.numberOfGuests} votes received
-            </p>
-          </>
-        ) : (
-          <>
-            <h2 className="text-center text-2xl font-bold mb-4">Results</h2>
-            <Spacer y={1.5} />
-            <div className="text-left">
-              {Object.entries(averages)
-                .slice(0, displayIndex)
-                .map(([key, value]) => (
-                  <motion.p
-                    key={key}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-lg mb-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    {key.charAt(0).toUpperCase() + key.slice(1)}:{" "}
-                    {value.toFixed(2)}
-                  </motion.p>
-                ))}
-            </div>
-            {displayIndex >= Object.keys(averages).length &&
-              totalAverage !== null && (
-                <motion.div
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="mt-4"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <h3 className="text-center text-xl font-bold">
-                    Total Average: {totalAverage.toFixed(2)}
-                  </h3>
-                </motion.div>
-              )}
-          </>
-        )}
-      </Card>
+      {loading || Object.entries(averages).length < 3 ? (
+        <h2 className="text-center text-xl">Loading...</h2>
+      ) : session && session.guests.length < session.numberOfGuests ? (
+        <Card className="max-w-md w-full p-6">
+          <div className="flex flex-col items-center mb-4">
+            <AvatarGroup isBordered>
+              {session.guests.map((guest) => (
+                <Avatar key={guest.name} src={guest.photoURL} />
+              ))}
+            </AvatarGroup>
+          </div>
+          <Progress
+            color="primary"
+            value={(session.guests.length / session.numberOfGuests) * 100}
+          />
+          <Spacer y={1.5} />
+          <h2 className="text-center text-xl">
+            Waiting for all guests to vote...
+          </h2>
+          <p className="text-center">
+            {session.guests.length} / {session.numberOfGuests} votes received
+          </p>
+        </Card>
+      ) : (
+        <div className="flex flex-col items-center">
+          <h2 className="text-center text-4xl font-bold mb-4">Results</h2>
+          <Spacer y={1.5} />
+          <Table
+            isStriped
+            aria-label="Results table"
+            className="min-w-md"
+            style={{ width: "300px" }}
+          >
+            <TableHeader>
+              <TableColumn>AREA</TableColumn>
+              <TableColumn>SCORE</TableColumn>
+            </TableHeader>
+            <TableBody>
+              {QUESTIONS.map(({ key, question }, index) => (
+                <TableRow key={key}>
+                  <TableCell className="font-bold">{question}</TableCell>
+                  <TableCell>
+                    <TextEffect delay={(0 + index) * 5} per="char">
+                      {`${averages[key].toFixed(2)}`}
+                    </TextEffect>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          {displayIndex >= Object.keys(averages).length &&
+            totalAverage !== null && (
+              <>
+                <Spacer y={1.5} />
+                <h3 className="text-center text-xl">
+                  Total Average: {totalAverage.toFixed(2)}
+                </h3>
+              </>
+            )}
+
+          {displayIndex >= Object.keys(averages).length && (
+            <>
+              <Spacer y={1.5} />
+              <h2 className="text-center text-4xl font-bold mb-4 mt-20">
+                Diners
+              </h2>
+              <Table
+                isStriped
+                aria-label="Leaderboard table"
+                className="min-w-md"
+                style={{ width: "300px" }}
+              >
+                <TableHeader>
+                  <TableColumn>Avatar</TableColumn>
+                  <TableColumn>Name</TableColumn>
+                  <TableColumn>Votes</TableColumn>
+                </TableHeader>
+                <TableBody>
+                  {sortedGuests.map((guest) => {
+                    const totalVotes = Object.values(guest.votes).reduce(
+                      (acc, vote) => acc + vote,
+                      0,
+                    );
+
+                    return (
+                      <TableRow key={guest.name}>
+                        <TableCell>
+                          <Avatar src={guest.photoURL} />
+                        </TableCell>
+                        <TableCell>{guest.name}</TableCell>
+                        <TableCell>{totalVotes}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

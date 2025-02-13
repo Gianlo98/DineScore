@@ -19,6 +19,7 @@ import {
 import { Guest, GuestVote } from "@/types";
 import { useAuth } from "@/context/authContext";
 import { useSession } from "@/hooks/useSession";
+import { QUESTIONS } from "@/config/questions";
 
 export default function Page() {
   const { id: sessionId } = useParams<{ id: string }>();
@@ -36,18 +37,6 @@ export default function Page() {
     ingredients: -1,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const questions: {
-    key: keyof GuestVote;
-    question: string;
-  }[] = [
-    { key: "location", question: "Location" },
-    { key: "service", question: "Service" },
-    { key: "menu", question: "Menu" },
-    { key: "bill", question: "Bill" },
-    { key: "pizzaDough", question: "Pizza Dough" },
-    { key: "ingredients", question: "Ingredients" },
-  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (step === 1) {
@@ -81,11 +70,11 @@ export default function Page() {
       return "Which pizza did you have?";
     }
 
-    if (step === questions.length + 2) {
+    if (step === QUESTIONS.length + 2) {
       return "Your experience at " + currentSession!.name;
     }
 
-    return "Rate the " + questions[step - 2].question;
+    return "Rate the " + QUESTIONS[step - 2].question;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -95,7 +84,7 @@ export default function Page() {
       alert("Please enter a valid meal");
     }
 
-    if (step === questions.length + 2) {
+    if (step === QUESTIONS.length + 2) {
       const guest: Guest = {
         name: user!.displayName || "Guest",
         meal,
@@ -174,7 +163,7 @@ export default function Page() {
             onChange={handleInputChange}
           />
         )}
-        {step > 1 && step <= questions.length + 1 && (
+        {step > 1 && step <= QUESTIONS.length + 1 && (
           <div className="flex flex-col gap-4 w-full">
             <Spacer y={1} />
             <div className="flex justify-between gap-2 flex-col">
@@ -182,14 +171,14 @@ export default function Page() {
                 <Button
                   key={index + 1}
                   color={
-                    votes[questions[step - 2].key] === index + 1
+                    votes[QUESTIONS[step - 2].key] === index + 1
                       ? "primary"
                       : "default"
                   }
                   onPress={() => {
                     setVotes((prevVotes) => ({
                       ...prevVotes,
-                      [questions[step - 2].key]: index + 1,
+                      [QUESTIONS[step - 2].key]: index + 1,
                     }));
                     setStep((prevStep) => prevStep + 1); // Move to the next step
                   }}
@@ -200,7 +189,7 @@ export default function Page() {
             </div>
           </div>
         )}
-        {step === questions.length + 2 && (
+        {step === QUESTIONS.length + 2 && (
           <div className="w-full py-4">
             <Table isStriped aria-label="Example static collection table">
               <TableHeader>
@@ -213,7 +202,7 @@ export default function Page() {
                     <TableCell className="font-bold">Meal</TableCell>
                     <TableCell>{meal}</TableCell>
                   </TableRow>
-                  {questions.map((q) => (
+                  {QUESTIONS.map((q) => (
                     <TableRow key={q.key}>
                       <TableCell className="font-bold">{q.question}</TableCell>
                       <TableCell>{votes[q.key]}</TableCell>
@@ -237,13 +226,13 @@ export default function Page() {
           <Button
             className="w-full"
             color="primary"
-            type={step === questions.length + 2 ? "submit" : "button"}
+            type={step === QUESTIONS.length + 2 ? "submit" : "button"}
             onPress={() =>
-              step !== questions.length + 2 &&
+              step !== QUESTIONS.length + 2 &&
               setStep((prevStep) => prevStep + 1)
             }
           >
-            {step === questions.length + 2 ? "Submit" : "Next"}
+            {step === QUESTIONS.length + 2 ? "Submit" : "Next"}
           </Button>
         </div>
       </Form>

@@ -9,7 +9,7 @@ import {
 
 import { db } from "@/firebase/firebaseConfig";
 import { Guest, Session } from "@/types";
-import { SESSION_COLLECTION } from "@/actions/firebaseFunctions";
+import { SESSION_COLLECTION } from "@/config/firebaseStorage";
 
 export const useSession = (sessionId: string) => {
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
