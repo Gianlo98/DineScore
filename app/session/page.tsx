@@ -1,9 +1,9 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { Button } from "@nextui-org/button";
-import { Input } from "@nextui-org/input";
-import { Form } from "@nextui-org/form";
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
+import { Form } from "@heroui/form";
 import { FormEvent } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 

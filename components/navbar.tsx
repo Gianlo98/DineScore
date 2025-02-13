@@ -5,14 +5,14 @@ import {
   NavbarContent,
   NavbarBrand,
   NavbarItem,
-} from "@nextui-org/navbar";
+} from "@heroui/navbar";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from "@nextui-org/dropdown";
-import { Avatar } from "@nextui-org/avatar";
+} from "@heroui/dropdown";
+import { Avatar } from "@heroui/avatar";
 import { signOut } from "firebase/auth";
 
 import { ThemeSwitch } from "@/components/theme-switch";

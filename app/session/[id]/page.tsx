@@ -2,12 +2,19 @@
 
 import { useState } from "react";
 import { redirect, useParams } from "next/navigation";
-import { Input } from "@nextui-org/input";
-import { Progress } from "@nextui-org/progress";
-import { Spacer } from "@nextui-org/spacer";
-import { Form } from "@nextui-org/form";
-import { Button } from "@nextui-org/button";
+import { Input } from "@heroui/input";
+import { Spacer } from "@heroui/spacer";
+import { Form } from "@heroui/form";
+import { Button } from "@heroui/button";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@heroui/table";
 
 import { Guest, GuestVote } from "@/types";
 import { useAuth } from "@/context/authContext";
@@ -34,12 +41,12 @@ export default function Page() {
     key: keyof GuestVote;
     question: string;
   }[] = [
-    { key: "location", question: "Rate the location:" },
-    { key: "service", question: "Rate the service:" },
-    { key: "menu", question: "Rate the menu:" },
-    { key: "bill", question: "Rate the bill:" },
-    { key: "pizzaDough", question: "Rate the pizza dough:" },
-    { key: "ingredients", question: "Rate the ingredients:" },
+    { key: "location", question: "Location"},
+    { key: "service", question: "Service" },
+    { key: "menu", question: "Menu" },
+    { key: "bill", question: "Bill" },
+    { key: "pizzaDough", question: "Pizza Dough" },
+    { key: "ingredients", question: "Ingredients" },
   ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,11 +58,11 @@ export default function Page() {
   const getAnimation = () => {
     switch (step) {
       case 1:
-        return "/animations/meal.lottie";
+        return "/animations/pizzeria.json";
       case 2:
-        return "/animations/location.lottie";
+        return "/animations/location.json";
       case 3:
-        return "/animations/service.lottie";
+        return "/animations/service.json";
       case 4:
         return "/animations/menu.lottie";
       case 5:
@@ -65,8 +72,20 @@ export default function Page() {
       case 7:
         return "/animations/ingredients.lottie";
       default:
-        return "/animations/summary.lottie";
+        return "/animations/summary.json";
     }
+  };
+
+  const getHeadline = () => {
+    if (step === 1) {
+      return "Which pizza did you have?";
+    }
+
+    if (step === questions.length + 2) {
+      return "Your experience at " + currentSession!.name;
+    }
+
+    return "Rate the " + questions[step - 2].question;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,8 +93,6 @@ export default function Page() {
 
     if (step === 1 && !meal.trim()) {
       alert("Please enter a valid meal");
-
-      return;
     }
 
     if (step === questions.length + 2) {
@@ -121,9 +138,9 @@ export default function Page() {
   }
 
   return (
-    <div className="text-center">
+    <div className="text-center mb-20">
       <div className="flex flex-col items-center justify-center gap-4">
-        <div className="px-4 rounded-lg shadow-md">
+        <div className="px-4 rounded-lg">
           <DotLottieReact
             autoplay
             loop
@@ -132,27 +149,23 @@ export default function Page() {
             src={getAnimation()}
           />
         </div>
-        <h1 className="text-2xl font-medium">
-          Your experience at {currentSession.name}
-        </h1>
       </div>
+      <h1 className="text-3xl font-medium text-center mt-10">
+        {getHeadline()}
+      </h1>
+
       <Form
-        className="w-full max-w-xs flex flex-col gap-4 py-8 mx-auto"
+        className="w-full max-w-xs flex flex-col gap-4 mx-auto"
         validationBehavior="native"
         onSubmit={handleSubmit}
       >
-        <Progress
-          color="primary"
-          value={(step / (questions.length + 2)) * 100}
-        />
         <Spacer y={1.5} />
 
         {step === 1 && (
           <Input
             fullWidth
             isRequired
-            errorMessage="Please enter a valid meal"
-            label="Your Meal"
+            errorMessage="Please enter a valid pizza"
             labelPlacement="outside"
             name="meal"
             placeholder="Pizza Margherita"
@@ -163,7 +176,6 @@ export default function Page() {
         )}
         {step > 1 && step <= questions.length + 1 && (
           <div className="flex flex-col gap-4 w-full">
-            <h3 className="text-center">{questions[step - 2].question}</h3>
             <Spacer y={1} />
             <div className="flex justify-between gap-2 flex-col">
               {Array.from({ length: 5 }, (_, index) => (
@@ -190,17 +202,26 @@ export default function Page() {
         )}
         {step === questions.length + 2 && (
           <div className="w-full py-4">
-            <h3 className="text-center text-2xl">Summary</h3>
-            <ul className="text-left">
-              <li>
-                <strong>Meal:</strong> {meal}
-              </li>
-              {questions.map((q) => (
-                <li key={q.key}>
-                  <strong>{q.question}</strong> {votes[q.key]}
-                </li>
-              ))}
-            </ul>
+            <Table isStriped aria-label="Example static collection table">
+              <TableHeader>
+                <TableColumn>AREA</TableColumn>
+                <TableColumn>SCORE</TableColumn>
+              </TableHeader>
+              <TableBody>
+                <>
+                  <TableRow key="meal">
+                    <TableCell className="font-bold">Meal</TableCell>
+                    <TableCell>{meal}</TableCell>
+                  </TableRow>
+                  {questions.map((q) => (
+                    <TableRow key={q.key}>
+                      <TableCell className="font-bold">{q.question}</TableCell>
+                      <TableCell>{votes[q.key]}</TableCell>
+                    </TableRow>
+                  ))}
+                </>
+              </TableBody>
+            </Table>
           </div>
         )}
         <div className="flex justify-between gap-2 w-full">

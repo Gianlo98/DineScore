@@ -1,7 +1,7 @@
 "use client";
 
 import { signInWithPopup } from "firebase/auth";
-import { Button } from "@nextui-org/button";
+import { Button } from "@heroui/button";
 
 import { auth, googleProvider } from "@/firebase/firebaseConfig";
 

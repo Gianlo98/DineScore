@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Progress } from "@nextui-org/progress";
-import { Card } from "@nextui-org/card";
-import { Spacer } from "@nextui-org/spacer";
+import { Progress } from "@heroui/progress";
+import { Card } from "@heroui/card";
+import { Spacer } from "@heroui/spacer";
 import { useParams } from "next/navigation";
 import { doc, onSnapshot } from "firebase/firestore";
 import { motion } from "framer-motion";
-import { Avatar, AvatarGroup } from "@nextui-org/avatar";
+import { Avatar, AvatarGroup } from "@heroui/avatar";
 
 import { Session } from "@/types";
 import { db } from "@/firebase/firebaseConfig";
