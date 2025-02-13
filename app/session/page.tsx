@@ -1,12 +1,13 @@
 "use client";
 
-import { redirect } from "next/navigation";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Form } from "@heroui/form";
 import { FormEvent } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { redirect } from "next/navigation";
 
+import PlaceAutocompleteDropdown from "@/components/PlaceAutocompleteDropdown";
 import { SessionStatus } from "@/types";
 import { createVotingSession } from "@/actions/firebaseFunctions";
 
@@ -14,10 +15,10 @@ export default function StartSession() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let data = Object.fromEntries(new FormData(e.currentTarget));
-
     const session = {
       date: new Date().toISOString(),
       name: data.place as string,
+      placeId: data.place_id as string,
       numberOfGuests: data.guests as unknown as number,
       guests: [],
       status: "open" as SessionStatus,
@@ -45,14 +46,10 @@ export default function StartSession() {
           validationBehavior="native"
           onSubmit={handleSubmit}
         >
-          <Input
-            isRequired
-            errorMessage="Please enter a valid name"
-            label="Place name"
-            labelPlacement="outside"
+          <PlaceAutocompleteDropdown
+            label="Restaurant Name"
             name="place"
-            placeholder="Enter the place name"
-            type="text"
+            placeholder="Vito Europalle"
           />
 
           <Input
@@ -61,7 +58,7 @@ export default function StartSession() {
             label="Number of Guests"
             labelPlacement="outside"
             name="guests"
-            placeholder="Number of Guests"
+            placeholder="4"
             type="number"
           />
           <div className="w-full">

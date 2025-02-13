@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import { Link } from "@heroui/link";
 import clsx from "clsx";
+import Script from "next/script";
 
 import { Providers } from "./providers";
 
@@ -37,6 +38,10 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
+        <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+          strategy="beforeInteractive"
+        />
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
             <Navbar />
