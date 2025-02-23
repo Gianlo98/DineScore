@@ -113,7 +113,6 @@ export default function ResultsPage() {
       })
     : [];
 
-
   return (
     <div className="flex justify-center items-center">
       {loading ? (
@@ -139,6 +138,8 @@ export default function ResultsPage() {
             {session.guests.length} / {session.numberOfGuests} votes received
           </p>
         </Card>
+      ) : Object.entries(averages).length < 3 ? (
+        <h2 className="text-center text-xl">Calculating...</h2>
       ) : (
         <div className="flex flex-col items-center">
           <h2 className="text-center text-4xl font-bold mb-4">Results</h2>
