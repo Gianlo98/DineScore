@@ -60,9 +60,21 @@ export const Navbar = () => {
                 <p className="font-semibold">Signed in as</p>
                 <p className="font-semibold">{user.displayName}</p>
               </DropdownItem>
-              <DropdownItem key="settings">Start a new session</DropdownItem>
+              <DropdownItem key="session">
+                <NextLink
+                  className="flex justify-start items-center gap-1"
+                  href="/session"
+                >
+                  <p className="font-bold text-inherit"> Start a new session</p>
+                </NextLink>
+              </DropdownItem>
               <DropdownItem key="team_settings" showDivider={true}>
-                My votes
+                <NextLink
+                  className="flex justify-start items-center gap-1"
+                  href="/history"
+                >
+                  <p className="font-bold text-inherit"> My votes</p>
+                </NextLink>
               </DropdownItem>
               <DropdownItem key="logout" color="danger" onPress={handleSignOut}>
                 Log Out
