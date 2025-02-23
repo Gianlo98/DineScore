@@ -191,7 +191,7 @@ export default function ResultsPage() {
                 <TableHeader>
                   <TableColumn>Avatar</TableColumn>
                   <TableColumn>Name</TableColumn>
-                  <TableColumn>Votes</TableColumn>
+                  <TableColumn>Total Score</TableColumn>
                 </TableHeader>
                 <TableBody>
                   {sortedGuests.map((guest) => {
