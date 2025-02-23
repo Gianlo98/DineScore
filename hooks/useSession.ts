@@ -66,6 +66,7 @@ export const useSession = (sessionId: string) => {
       try {
         await updateDoc(sessionDoc, {
           guests: arrayUnion(guest),
+          guestsUid: arrayUnion(guest.uid),
         });
       } catch (error) {
         console.error("Error adding guest:", error);

@@ -21,6 +21,7 @@ export default function StartSession() {
       placeId: data.place_id as string,
       numberOfGuests: data.guests as unknown as number,
       guests: [],
+      guestsUid: [],
       status: "open" as SessionStatus,
     };
 

@@ -26,12 +26,11 @@ export const useHistory = (user: User | null) => {
     const sessionsRef = collection(db, SESSION_COLLECTION);
     const q = query(
       sessionsRef,
-      where("guests", "array-contains", { uid: user.uid }),
+      where("guestsUid", "array-contains", user.uid),
     );
 
     try {
       const querySnapshot = await getDocs(q);
-      console.log("guests", "array-contains", { uid: user.uid }, querySnapshot.docs);
       const sessionsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),

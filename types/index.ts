@@ -27,6 +27,7 @@ export interface Session {
   id?: string;
   date: string;
   name: string;
+  placeId?: string;
   numberOfGuests: number;
   guests: Guest[];
   status: SessionStatus;
