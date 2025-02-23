@@ -15,6 +15,7 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/table";
+import { Textarea } from "@heroui/input";
 
 import { Guest, GuestVote } from "@/types";
 import { useAuth } from "@/context/authContext";
@@ -28,6 +29,7 @@ export default function Page() {
 
   const [step, setStep] = useState(1);
   const [meal, setMeal] = useState("");
+  const [note, setNote] = useState("");
   const [votes, setVotes] = useState<GuestVote>({
     location: -1,
     service: -1,
@@ -41,6 +43,8 @@ export default function Page() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (step === 1) {
       setMeal(e.target.value);
+    } else {
+      setNote(e.target.value);
     }
   };
 
@@ -88,6 +92,7 @@ export default function Page() {
       const guest: Guest = {
         name: user!.displayName || "Guest",
         meal,
+        note: note,
         photoURL: user!.photoURL || undefined,
         uid: user!.uid,
         votes,
@@ -211,6 +216,19 @@ export default function Page() {
                 </>
               </TableBody>
             </Table>
+
+            <Textarea
+              fullWidth
+              className="max-w-xs mt-10"
+              errorMessage="Please enter a valid pizza"
+              label="Personal Note"
+              labelPlacement="outside"
+              name="notes"
+              placeholder="It was a great experience!"
+              type="textarea"
+              value={note}
+              onChange={handleInputChange}
+            />
           </div>
         )}
         <div className="flex justify-between gap-2 w-full">
@@ -232,7 +250,7 @@ export default function Page() {
               setStep((prevStep) => prevStep + 1)
             }
           >
-            {step === QUESTIONS.length + 2 ? "Submit" : "Next"}
+            {step === QUESTIONS.length + 2 ? "Save" : "Next"}
           </Button>
         </div>
       </Form>

@@ -113,9 +113,10 @@ export default function ResultsPage() {
       })
     : [];
 
+
   return (
     <div className="flex justify-center items-center">
-      {loading || Object.entries(averages).length < 3 ? (
+      {loading ? (
         <h2 className="text-center text-xl">Loading...</h2>
       ) : session && session.guests.length < session.numberOfGuests ? (
         <Card className="max-w-md w-full p-6">
