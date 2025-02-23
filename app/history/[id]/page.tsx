@@ -13,6 +13,7 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/table";
+import { Textarea } from "@heroui/input";
 
 import { Session } from "@/types";
 import { db } from "@/firebase/firebaseConfig";
@@ -23,13 +24,13 @@ import { useAuth } from "@/context/authContext";
 
 export default function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>();
-  const { user, loading: userLoading } = useAuth();
+  const { user } = useAuth();
 
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [averages, setAverages] = useState<Record<string, number>>({});
   const [totalAverage, setTotalAverage] = useState<number | null>(null);
-  const [displayIndex, setDisplayIndex] = useState(6);
+  const [displayIndex] = useState(6);
 
   useEffect(() => {
     const sessionRef = doc(db, SESSION_COLLECTION, sessionId);
@@ -100,7 +101,7 @@ export default function ResultsPage() {
       })
     : [];
 
-  if (loading || Object.entries(averages).length < 3 || user == null) {
+  if (loading || Object.entries(averages).length < 1 || user == null) {
     return <div>Loading...</div>;
   }
 
@@ -138,6 +139,19 @@ export default function ResultsPage() {
               </>
             </TableBody>
           </Table>
+          <Spacer y={1.5} />
+
+          {userVotes.note && (
+            <Textarea
+              disabled
+              fullWidth
+              className="max-w-xs mt-10"
+              label="Personal Note"
+              labelPlacement="outside"
+              type="textarea"
+              value={userVotes.note}
+            />
+          )}
         </>
 
         <h2 className="text-center text-4xl font-bold mb-4 mt-20">Results</h2>
