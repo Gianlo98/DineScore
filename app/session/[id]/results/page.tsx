@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Progress } from "@heroui/progress";
-import { Card } from "@heroui/card";
+import { Card, CardBody } from "@heroui/card";
 import { Spacer } from "@heroui/spacer";
 import { useParams } from "next/navigation";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -172,9 +172,14 @@ export default function ResultsPage() {
             totalAverage !== null && (
               <>
                 <Spacer y={1.5} />
-                <h3 className="text-center text-xl">
-                  Total Average: {totalAverage.toFixed(2)}
-                </h3>
+                <Card
+                  fullWidth
+                  className="bg-black text-white text-center text-xl font-bold"
+                >
+                  <CardBody className="text-center">
+                    Final Score : {totalAverage.toFixed(2)}
+                  </CardBody>
+                </Card>
               </>
             )}
 
