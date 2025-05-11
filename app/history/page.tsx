@@ -111,47 +111,57 @@ export default function Page() {
 
       <div className="w-full max-w-5xl px-4 overflow-hidden">
         <div className="w-full overflow-x-auto">
-          <Table 
-            isStriped 
+          <Table
+            isStriped
             aria-label="Sessions history table"
             classNames={{
               wrapper: "min-w-full w-max",
-              table: "min-w-[600px] border-collapse", 
+              table: "min-w-[600px] border-collapse",
             }}
           >
-          <TableHeader>
-            <TableColumn className="whitespace-nowrap w-[140px]">DATE</TableColumn>
-            <TableColumn className="whitespace-nowrap w-[200px]">PLACE</TableColumn>
-            <TableColumn className="whitespace-nowrap w-[100px] text-center">YOUR SCORE</TableColumn>
-            <TableColumn className="whitespace-nowrap w-[100px] text-center">FINAL SCORE</TableColumn>
-            <TableColumn className="whitespace-nowrap w-[60px]"> </TableColumn>
-          </TableHeader>
-          <TableBody>
-            <>
-              {sessions.map((session) => (
-                <TableRow key={session.id}>
-                  <TableCell className="whitespace-nowrap">{formatDate(session.date)}</TableCell>
-                  <TableCell className="w-[200px] max-w-[200px] truncate">
-                    {session.placeId ? (
-                      <Link className="text-blue-500" href={getMapsLink(session)} passHref={true}>
-                        {session.name}
+            <TableHeader>
+              <TableColumn className="whitespace-nowrap w-[140px]">DATE</TableColumn>
+              <TableColumn className="whitespace-nowrap w-[200px]">PLACE</TableColumn>
+              <TableColumn className="whitespace-nowrap w-[100px] text-center">
+                YOUR SCORE
+              </TableColumn>
+              <TableColumn className="whitespace-nowrap w-[100px] text-center">
+                FINAL SCORE
+              </TableColumn>
+              <TableColumn className="whitespace-nowrap w-[60px]"> </TableColumn>
+            </TableHeader>
+            <TableBody>
+              <>
+                {sessions.map((session) => (
+                  <TableRow key={session.id}>
+                    <TableCell className="whitespace-nowrap">{formatDate(session.date)}</TableCell>
+                    <TableCell className="w-[200px] max-w-[200px] truncate">
+                      {session.placeId ? (
+                        <Link className="text-blue-500" href={getMapsLink(session)} passHref={true}>
+                          {session.name}
+                        </Link>
+                      ) : (
+                        session.name
+                      )}
+                    </TableCell>
+                    <TableCell className="font-bold whitespace-nowrap text-center">
+                      {getAverage(session, user)}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap text-center">
+                      {getFinalScore(session)}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <Link href={`/session/${session.id}/results?from=history`}>
+                        <Button color="primary" size="sm">
+                          →
+                        </Button>
                       </Link>
-                    ) : (
-                      session.name
-                    )}
-                  </TableCell>
-                  <TableCell className="font-bold whitespace-nowrap text-center">{getAverage(session, user)}</TableCell>
-                  <TableCell className="whitespace-nowrap text-center">{getFinalScore(session)}</TableCell>
-                  <TableCell className="whitespace-nowrap">
-                    <Link as={`/history/${session.id}`} href="/history/[id]">
-                      <Button color="primary" size="sm">→</Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </>
-          </TableBody>
-        </Table>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>
