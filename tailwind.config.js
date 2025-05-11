@@ -9,8 +9,8 @@ const config = {
   ],
   theme: {
     screens: {
-      'xs': '475px',
-      ...require('tailwindcss/defaultTheme').screens,
+      xs: "475px",
+      ...require("tailwindcss/defaultTheme").screens,
     },
     extend: {
       fontFamily: {
