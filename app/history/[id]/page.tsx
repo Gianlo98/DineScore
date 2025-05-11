@@ -5,14 +5,7 @@ import { Spacer } from "@heroui/spacer";
 import { useParams } from "next/navigation";
 import { doc, onSnapshot } from "firebase/firestore";
 import { Avatar } from "@heroui/avatar";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@heroui/table";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { Textarea } from "@heroui/input";
 
 import { Session } from "@/types";
@@ -64,7 +57,7 @@ export default function ResultsPage() {
 
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     const averages = Object.keys(totals).reduce(
@@ -73,14 +66,11 @@ export default function ResultsPage() {
 
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     // Calculate total average
-    const total = Object.values(averages).reduce(
-      (sum, value) => sum + value,
-      0,
-    );
+    const total = Object.values(averages).reduce((sum, value) => sum + value, 0);
 
     setTotalAverage(total / Object.keys(averages).length);
     setAverages(averages);
@@ -88,14 +78,8 @@ export default function ResultsPage() {
 
   const sortedGuests = session
     ? [...session.guests].sort((a, b) => {
-        const totalVotesA = Object.values(a.votes).reduce(
-          (acc, vote) => acc + vote,
-          0,
-        );
-        const totalVotesB = Object.values(b.votes).reduce(
-          (acc, vote) => acc + vote,
-          0,
-        );
+        const totalVotesA = Object.values(a.votes).reduce((acc, vote) => acc + vote, 0);
+        const totalVotesB = Object.values(b.votes).reduce((acc, vote) => acc + vote, 0);
 
         return totalVotesB - totalVotesA;
       })
@@ -114,9 +98,7 @@ export default function ResultsPage() {
       <div className="flex flex-col items-center">
         <>
           <Spacer y={1.5} />
-          <h2 className="text-center text-4xl font-bold mb-4 mt-20">
-            Your Scores
-          </h2>
+          <h2 className="text-center text-4xl font-bold mb-4 mt-20">Your Scores</h2>
           <Table isStriped aria-label="Example static collection table">
             <TableHeader>
               <TableColumn>AREA</TableColumn>
@@ -156,12 +138,7 @@ export default function ResultsPage() {
 
         <h2 className="text-center text-4xl font-bold mb-4 mt-20">Results</h2>
         <Spacer y={1.5} />
-        <Table
-          isStriped
-          aria-label="Results table"
-          className="min-w-md"
-          style={{ width: "300px" }}
-        >
+        <Table isStriped aria-label="Results table" className="min-w-md" style={{ width: "300px" }}>
           <TableHeader>
             <TableColumn>AREA</TableColumn>
             <TableColumn>SCORE</TableColumn>
@@ -180,15 +157,12 @@ export default function ResultsPage() {
           </TableBody>
         </Table>
 
-        {displayIndex >= Object.keys(averages).length &&
-          totalAverage !== null && (
-            <>
-              <Spacer y={1.5} />
-              <h3 className="text-center text-xl">
-                Total Average: {totalAverage.toFixed(2)}
-              </h3>
-            </>
-          )}
+        {displayIndex >= Object.keys(averages).length && totalAverage !== null && (
+          <>
+            <Spacer y={1.5} />
+            <h3 className="text-center text-xl">Total Average: {totalAverage.toFixed(2)}</h3>
+          </>
+        )}
 
         <>
           <Spacer y={1.5} />
@@ -206,10 +180,7 @@ export default function ResultsPage() {
             </TableHeader>
             <TableBody>
               {sortedGuests.map((guest) => {
-                const totalVotes = Object.values(guest.votes).reduce(
-                  (acc, vote) => acc + vote,
-                  0,
-                );
+                const totalVotes = Object.values(guest.votes).reduce((acc, vote) => acc + vote, 0);
 
                 return (
                   <TableRow key={guest.name}>

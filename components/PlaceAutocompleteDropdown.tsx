@@ -62,29 +62,19 @@ export default function PlaceAutocompleteDropdown({
   // Start with an empty text field (value) so that the placeholder is visible.
   const [inputValue, setInputValue] = useState(value);
   const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
-  const [detailsMap, setDetailsMap] = useState<Record<string, PlaceDetails>>(
-    {},
-  );
+  const [detailsMap, setDetailsMap] = useState<Record<string, PlaceDetails>>({});
   const [loading, setLoading] = useState(false);
   // Hold the selected place_id; if no selection is made, it remains null.
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
 
-  const autocompleteService =
-    useRef<google.maps.places.AutocompleteService | null>(null);
-  const placesServiceRef = useRef<google.maps.places.PlacesService | null>(
-    null,
-  );
+  const autocompleteService = useRef<google.maps.places.AutocompleteService | null>(null);
+  const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Initialize the AutocompleteService.
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      window.google &&
-      !autocompleteService.current
-    ) {
-      autocompleteService.current =
-        new window.google.maps.places.AutocompleteService();
+    if (typeof window !== "undefined" && window.google && !autocompleteService.current) {
+      autocompleteService.current = new window.google.maps.places.AutocompleteService();
     }
   }, []);
 
@@ -96,9 +86,7 @@ export default function PlaceAutocompleteDropdown({
       containerRef.current &&
       !placesServiceRef.current
     ) {
-      placesServiceRef.current = new window.google.maps.places.PlacesService(
-        containerRef.current,
-      );
+      placesServiceRef.current = new window.google.maps.places.PlacesService(containerRef.current);
     }
   }, [containerRef]);
 
@@ -115,16 +103,10 @@ export default function PlaceAutocompleteDropdown({
         { input: inputValue, types: ["restaurant"], locationBias: "IP_BIAS" },
         (preds, status) => {
           setLoading(false);
-          if (
-            status === window.google.maps.places.PlacesServiceStatus.OK &&
-            preds
-          ) {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK && preds) {
             setPredictions(preds);
             preds.forEach((prediction) => {
-              if (
-                !detailsMap[prediction.place_id] &&
-                placesServiceRef.current
-              ) {
+              if (!detailsMap[prediction.place_id] && placesServiceRef.current) {
                 placesServiceRef.current.getDetails(
                   {
                     placeId: prediction.place_id,
@@ -132,8 +114,7 @@ export default function PlaceAutocompleteDropdown({
                   },
                   (placeResult, statusDetail) => {
                     if (
-                      statusDetail ===
-                        window.google.maps.places.PlacesServiceStatus.OK &&
+                      statusDetail === window.google.maps.places.PlacesServiceStatus.OK &&
                       placeResult
                     ) {
                       setDetailsMap((prev) => ({
@@ -145,14 +126,14 @@ export default function PlaceAutocompleteDropdown({
                         },
                       }));
                     }
-                  },
+                  }
                 );
               }
             });
           } else {
             setPredictions([]);
           }
-        },
+        }
       );
     }, 500);
 
@@ -227,9 +208,7 @@ export default function PlaceAutocompleteDropdown({
               onPress={() => handleSelect(item)}
             >
               <div className="flex flex-col">
-                <span className="font-bold">
-                  {details?.name || item.description}
-                </span>
+                <span className="font-bold">{details?.name || item.description}</span>
                 {(street || city) && (
                   <span className="text-sm text-default-400">
                     {street}

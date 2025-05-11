@@ -53,31 +53,18 @@ export default function ProtectedPage() {
       ) : (
         <>
           <div className="flex flex-col items-center justify-center max-w-xl text-center mb-8">
-            <Avatar
-              className="w-30 h-30 mb-5"
-              size="lg"
-              src={user.photoURL || undefined}
-            />
-            <span className={title()}>
-              👋 Welcome back, {user.displayName || "User"}!
-            </span>
+            <Avatar className="w-30 h-30 mb-5" size="lg" src={user.photoURL || undefined} />
+            <span className={title()}>👋 Welcome back, {user.displayName || "User"}!</span>
             <Button className="mt-5" onPress={() => router.push("/session")}>
               Start a New Session
             </Button>
           </div>
-          
+
           {places.length > 0 && (
             <div className="w-full max-w-5xl px-4">
               <Divider className="my-4" />
-              <h2 className={subtitle({ class: "mb-4 text-center" })}>
-                Your Pizza Journey Map
-              </h2>
-              <GoogleMap 
-                places={places} 
-                height="400px" 
-                showInfo={true}
-                initialZoom={11}
-              />
+              <h2 className={subtitle({ class: "mb-4 text-center" })}>Your Pizza Journey Map</h2>
+              <GoogleMap height="400px" initialZoom={11} places={places} showInfo={true} />
             </div>
           )}
         </>

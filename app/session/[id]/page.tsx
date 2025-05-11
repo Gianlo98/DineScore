@@ -7,14 +7,7 @@ import { Spacer } from "@heroui/spacer";
 import { Form } from "@heroui/form";
 import { Button } from "@heroui/button";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@heroui/table";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { Textarea } from "@heroui/input";
 
 import { Guest, GuestVote } from "@/types";
@@ -144,9 +137,7 @@ export default function Page() {
           />
         </div>
       </div>
-      <h1 className="text-3xl font-medium text-center mt-10">
-        {getHeadline()}
-      </h1>
+      <h1 className="text-3xl font-medium text-center mt-10">{getHeadline()}</h1>
 
       <Form
         className="w-full max-w-xs flex flex-col gap-4 mx-auto"
@@ -175,11 +166,7 @@ export default function Page() {
               {Array.from({ length: 5 }, (_, index) => (
                 <Button
                   key={index + 1}
-                  color={
-                    votes[QUESTIONS[step - 2].key] === index + 1
-                      ? "primary"
-                      : "default"
-                  }
+                  color={votes[QUESTIONS[step - 2].key] === index + 1 ? "primary" : "default"}
                   onPress={() => {
                     setVotes((prevVotes) => ({
                       ...prevVotes,
@@ -245,10 +232,7 @@ export default function Page() {
             className="w-full"
             color="primary"
             type={step === QUESTIONS.length + 2 ? "submit" : "button"}
-            onPress={() =>
-              step !== QUESTIONS.length + 2 &&
-              setStep((prevStep) => prevStep + 1)
-            }
+            onPress={() => step !== QUESTIONS.length + 2 && setStep((prevStep) => prevStep + 1)}
           >
             {step === QUESTIONS.length + 2 ? "Save" : "Next"}
           </Button>

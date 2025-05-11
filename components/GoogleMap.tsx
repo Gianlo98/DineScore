@@ -40,13 +40,15 @@ export default function GoogleMap({
   useEffect(() => {
     const maxAttempts = 50; // 5 seconds max
     let attempts = 0;
-    
+
     const checkGoogleMapsLoaded = () => {
-      if (typeof window !== 'undefined' && 
-          window.google && 
-          window.google.maps && 
-          window.google.maps.Map &&
-          window.google.maps.places) {
+      if (
+        typeof window !== "undefined" &&
+        window.google &&
+        window.google.maps &&
+        window.google.maps.Map &&
+        window.google.maps.places
+      ) {
         setGoogleLoaded(true);
         setError(null);
       } else {
@@ -60,9 +62,9 @@ export default function GoogleMap({
         }
       }
     };
-    
+
     checkGoogleMapsLoaded();
-    
+
     // Cleanup
     return () => {
       attempts = maxAttempts; // Stop checking
@@ -83,7 +85,7 @@ export default function GoogleMap({
     try {
       // Default center (can be updated later)
       const defaultCenter = { lat: 40.7128, lng: -74.006 };
-      
+
       const newMap = new google.maps.Map(mapRef.current, {
         center: defaultCenter,
         zoom: initialZoom,
@@ -105,8 +107,15 @@ export default function GoogleMap({
 
   // Handle places changes
   useEffect(() => {
-    if (!map || places.length === 0 || !googleLoaded || 
-        !window.google || !window.google.maps || !window.google.maps.places) return;
+    if (
+      !map ||
+      places.length === 0 ||
+      !googleLoaded ||
+      !window.google ||
+      !window.google.maps ||
+      !window.google.maps.places
+    )
+      return;
 
     // Store references to cleanup
     let markersToCleanup: google.maps.Marker[] = [];
@@ -119,7 +128,7 @@ export default function GoogleMap({
         activeInfoWindow.close();
       }
     };
-    
+
     clearExistingMarkers();
 
     const newMarkers: google.maps.Marker[] = [];
@@ -143,10 +152,11 @@ export default function GoogleMap({
     // Process each place
     let processedCount = 0;
     let errorCount = 0;
-    
+
     places.forEach((place) => {
       if (!place.placeId) {
         processedCount++;
+
         return;
       }
 
@@ -158,9 +168,9 @@ export default function GoogleMap({
           },
           (placeDetails, status) => {
             if (!isMounted) return;
-            
+
             processedCount++;
-            
+
             if (
               status === google.maps.places.PlacesServiceStatus.OK &&
               placeDetails?.geometry?.location
@@ -179,7 +189,7 @@ export default function GoogleMap({
                 animation: google.maps.Animation.DROP,
                 icon: customIcon,
               });
-              
+
               markersToCleanup.push(marker);
 
               if (showInfo) {
@@ -194,15 +204,15 @@ export default function GoogleMap({
 
                 marker.addListener("click", () => {
                   if (!isMounted) return;
-                  
+
                   // Close any open info window
                   if (activeInfoWindowToCleanup) {
                     activeInfoWindowToCleanup.close();
                   }
-                  
+
                   infoWindow.open(map, marker);
                   activeInfoWindowToCleanup = infoWindow;
-                  
+
                   // Only update state when necessary
                   if (isMounted) {
                     setActiveMarker(marker);
@@ -223,6 +233,7 @@ export default function GoogleMap({
                 if (newMarkers.length === 1) {
                   // Center on the single marker
                   const position = newMarkers[0].getPosition();
+
                   if (position) {
                     map.setCenter(position);
                     map.setZoom(15);
@@ -231,7 +242,7 @@ export default function GoogleMap({
                   // Fit to show all markers
                   map.fitBounds(bounds);
                 }
-                
+
                 // Only update markers state once at the end
                 if (isMounted) {
                   setMarkers(newMarkers);
@@ -247,7 +258,7 @@ export default function GoogleMap({
         console.error("Error in Places API call:", err);
         processedCount++;
         errorCount++;
-        
+
         // Check if all places failed
         if (processedCount === places.length && newMarkers.length === 0) {
           setError("Could not display any locations on the map.");
@@ -258,7 +269,7 @@ export default function GoogleMap({
     // Cleanup function
     return () => {
       isMounted = false;
-      markersToCleanup.forEach(marker => marker.setMap(null));
+      markersToCleanup.forEach((marker) => marker.setMap(null));
       if (activeInfoWindowToCleanup) {
         activeInfoWindowToCleanup.close();
       }
@@ -269,25 +280,19 @@ export default function GoogleMap({
     <Card className={`w-full overflow-hidden ${className}`}>
       <CardBody className="p-0">
         {loading && (
-          <div
-            style={{ height, width }}
-            className="flex items-center justify-center"
-          >
+          <div className="flex items-center justify-center" style={{ height, width }}>
             <Spinner color="primary" />
           </div>
         )}
         {error && (
-          <div
-            style={{ height, width }}
-            className="flex items-center justify-center text-danger"
-          >
+          <div className="flex items-center justify-center text-danger" style={{ height, width }}>
             {error}
           </div>
         )}
         <div
           ref={mapRef}
-          style={{ height, width, display: error ? 'none' : 'block' }}
           className="google-map-container"
+          style={{ height, width, display: error ? "none" : "block" }}
         />
       </CardBody>
     </Card>

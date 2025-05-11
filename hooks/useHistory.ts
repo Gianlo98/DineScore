@@ -1,11 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  getDocs,
-} from "firebase/firestore";
+import { collection, query, where, onSnapshot, getDocs } from "firebase/firestore";
 import { User } from "firebase/auth";
 
 import { db } from "@/firebase/firebaseConfig";
@@ -24,10 +18,7 @@ export const useHistory = (user: User | null) => {
       return;
     }
     const sessionsRef = collection(db, SESSION_COLLECTION);
-    const q = query(
-      sessionsRef,
-      where("guestsUid", "array-contains", user.uid),
-    );
+    const q = query(sessionsRef, where("guestsUid", "array-contains", user.uid));
 
     try {
       const querySnapshot = await getDocs(q);
@@ -52,10 +43,7 @@ export const useHistory = (user: User | null) => {
 
       return;
     }
-    const q = query(
-      sessionsRef,
-      where("guests", "array-contains", { uid: user.uid }),
-    );
+    const q = query(sessionsRef, where("guests", "array-contains", { uid: user.uid }));
 
     const unsubscribe = onSnapshot(
       q,
@@ -71,7 +59,7 @@ export const useHistory = (user: User | null) => {
       (error) => {
         console.error("Error subscribing to sessions:", error);
         setIsLoading(false);
-      },
+      }
     );
 
     fetchSessions();

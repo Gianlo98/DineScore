@@ -1,17 +1,7 @@
 "use client";
 import NextLink from "next/link";
-import {
-  Navbar as NextUINavbar,
-  NavbarContent,
-  NavbarBrand,
-  NavbarItem,
-} from "@heroui/navbar";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@heroui/dropdown";
+import { Navbar as NextUINavbar, NavbarContent, NavbarBrand, NavbarItem } from "@heroui/navbar";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
 import { Avatar } from "@heroui/avatar";
 import { signOut } from "firebase/auth";
 
@@ -61,18 +51,12 @@ export const Navbar = () => {
                 <p className="font-semibold">{user.displayName}</p>
               </DropdownItem>
               <DropdownItem key="session">
-                <NextLink
-                  className="flex justify-start items-center gap-1"
-                  href="/session"
-                >
+                <NextLink className="flex justify-start items-center gap-1" href="/session">
                   <p className="font-bold text-inherit"> Start a new session</p>
                 </NextLink>
               </DropdownItem>
               <DropdownItem key="team_settings" showDivider={true}>
-                <NextLink
-                  className="flex justify-start items-center gap-1"
-                  href="/history"
-                >
+                <NextLink className="flex justify-start items-center gap-1" href="/history">
                   <p className="font-bold text-inherit"> My votes</p>
                 </NextLink>
               </DropdownItem>

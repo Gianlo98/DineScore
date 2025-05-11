@@ -15,7 +15,7 @@ import { Place } from "@/components/GoogleMap";
 
 export default function StartSession() {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let data = Object.fromEntries(new FormData(e.currentTarget));
@@ -33,13 +33,13 @@ export default function StartSession() {
 
     redirect(`/session/${s.id}`);
   };
-  
+
   const handlePlaceSelect = (place: { place_id: string | null; place_name: string }) => {
     if (place.place_id) {
       setSelectedPlace({
         id: crypto.randomUUID(),
         name: place.place_name,
-        placeId: place.place_id
+        placeId: place.place_id,
       });
     } else {
       setSelectedPlace(null);
@@ -49,12 +49,7 @@ export default function StartSession() {
   return (
     <div className="flex items-center justify-center text-center">
       <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
-        <DotLottieReact
-          autoplay
-          loop
-          className="mx-auto"
-          src="animations/session.lottie"
-        />
+        <DotLottieReact autoplay loop className="mx-auto" src="animations/session.lottie" />
 
         <h1 className="text-2xl font-medium">Start a Voting Session</h1>
 
@@ -69,15 +64,10 @@ export default function StartSession() {
             placeholder="Vito Europalle"
             onSelect={handlePlaceSelect}
           />
-          
+
           {selectedPlace && (
             <div className="w-full my-4">
-              <GoogleMap 
-                places={[selectedPlace]} 
-                height="250px" 
-                showInfo={true}
-                initialZoom={15}
-              />
+              <GoogleMap height="250px" initialZoom={15} places={[selectedPlace]} showInfo={true} />
             </div>
           )}
 

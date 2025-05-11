@@ -7,14 +7,7 @@ import { Spacer } from "@heroui/spacer";
 import { useParams } from "next/navigation";
 import { doc, onSnapshot } from "firebase/firestore";
 import { Avatar, AvatarGroup } from "@heroui/avatar";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@heroui/table";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 
 import { Session } from "@/types";
 import { db } from "@/firebase/firebaseConfig";
@@ -63,7 +56,7 @@ export default function ResultsPage() {
 
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     const averages = Object.keys(totals).reduce(
@@ -72,14 +65,11 @@ export default function ResultsPage() {
 
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     // Calculate total average
-    const total = Object.values(averages).reduce(
-      (sum, value) => sum + value,
-      0,
-    );
+    const total = Object.values(averages).reduce((sum, value) => sum + value, 0);
 
     setTotalAverage(total / Object.keys(averages).length);
     setAverages(averages);
@@ -90,7 +80,7 @@ export default function ResultsPage() {
     if (!loading && Object.keys(averages).length > 0) {
       const interval = setInterval(() => {
         setDisplayIndex((prevIndex) =>
-          prevIndex < Object.keys(averages).length ? prevIndex + 1 : prevIndex,
+          prevIndex < Object.keys(averages).length ? prevIndex + 1 : prevIndex
         );
       }, 5000); // 5 seconds for each line
 
@@ -100,14 +90,8 @@ export default function ResultsPage() {
 
   const sortedGuests = session
     ? [...session.guests].sort((a, b) => {
-        const totalVotesA = Object.values(a.votes).reduce(
-          (acc, vote) => acc + vote,
-          0,
-        );
-        const totalVotesB = Object.values(b.votes).reduce(
-          (acc, vote) => acc + vote,
-          0,
-        );
+        const totalVotesA = Object.values(a.votes).reduce((acc, vote) => acc + vote, 0);
+        const totalVotesB = Object.values(b.votes).reduce((acc, vote) => acc + vote, 0);
 
         return totalVotesB - totalVotesA;
       })
@@ -131,9 +115,7 @@ export default function ResultsPage() {
             value={(session.guests.length / session.numberOfGuests) * 100}
           />
           <Spacer y={1.5} />
-          <h2 className="text-center text-xl">
-            Waiting for all guests to vote...
-          </h2>
+          <h2 className="text-center text-xl">Waiting for all guests to vote...</h2>
           <p className="text-center">
             {session.guests.length} / {session.numberOfGuests} votes received
           </p>
@@ -168,27 +150,19 @@ export default function ResultsPage() {
             </TableBody>
           </Table>
 
-          {displayIndex >= Object.keys(averages).length &&
-            totalAverage !== null && (
-              <>
-                <Spacer y={1.5} />
-                <Card
-                  fullWidth
-                  className="bg-black text-white text-center text-xl font-bold"
-                >
-                  <CardBody className="text-center">
-                    Final Score : {totalAverage.toFixed(2)}
-                  </CardBody>
-                </Card>
-              </>
-            )}
+          {displayIndex >= Object.keys(averages).length && totalAverage !== null && (
+            <>
+              <Spacer y={1.5} />
+              <Card fullWidth className="bg-black text-white text-center text-xl font-bold">
+                <CardBody className="text-center">Final Score : {totalAverage.toFixed(2)}</CardBody>
+              </Card>
+            </>
+          )}
 
           {displayIndex >= Object.keys(averages).length && (
             <>
               <Spacer y={1.5} />
-              <h2 className="text-center text-4xl font-bold mb-4 mt-20">
-                Diners
-              </h2>
+              <h2 className="text-center text-4xl font-bold mb-4 mt-20">Diners</h2>
               <Table
                 isStriped
                 aria-label="Leaderboard table"
@@ -204,7 +178,7 @@ export default function ResultsPage() {
                   {sortedGuests.map((guest) => {
                     const totalVotes = Object.values(guest.votes).reduce(
                       (acc, vote) => acc + vote,
-                      0,
+                      0
                     );
 
                     return (

@@ -1,11 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import {
-  doc,
-  onSnapshot,
-  updateDoc,
-  arrayUnion,
-  getDoc,
-} from "firebase/firestore";
+import { doc, onSnapshot, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 
 import { db } from "@/firebase/firebaseConfig";
 import { Guest, Session } from "@/types";
@@ -33,7 +27,7 @@ export const useSession = (sessionId: string) => {
       },
       (_error) => {
         setIsLoading(false);
-      },
+      }
     );
   }, [sessionId]);
 
@@ -72,7 +66,7 @@ export const useSession = (sessionId: string) => {
         console.error("Error adding guest:", error);
       }
     },
-    [sessionId],
+    [sessionId]
   );
 
   useEffect(() => {
