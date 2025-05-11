@@ -45,17 +45,17 @@ export default function ProtectedPage() {
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 w-full">
       {user === null ? (
         <>
-          <div className="inline-block max-w-xl text-center justify-center">
-            <span className={title()}>{randomPhrase}</span>
+          <div className="inline-block max-w-xl text-center justify-center px-4">
+            <span className={title({ size: "sm", class: "text-2xl sm:text-4xl" })}>{randomPhrase}</span>
           </div>
           <GoogleButton />
         </>
       ) : (
         <>
-          <div className="flex flex-col items-center justify-center max-w-xl text-center mb-8">
+          <div className="flex flex-col items-center justify-center max-w-xl text-center mb-8 px-4">
             <Avatar className="w-30 h-30 mb-5" size="lg" src={user.photoURL || undefined} />
-            <span className={title()}>👋 Welcome back, {user.displayName || "User"}!</span>
-            <Button className="mt-5" onPress={() => router.push("/session")}>
+            <span className={title({ size: "sm", class: "text-2xl sm:text-4xl" })}>👋 Welcome back, {user.displayName || "User"}!</span>
+            <Button className="mt-5" size="md" fullWidth onPress={() => router.push("/session")}>
               Start a New Session
             </Button>
           </div>

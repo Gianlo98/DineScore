@@ -169,7 +169,7 @@ export default function PlaceAutocompleteDropdown({
         fullWidth
         aria-label="Search for a place"
         classNames={{
-          base: "max-w-xs",
+          base: "w-full max-w-full sm:max-w-xs",
           listboxWrapper: "max-h-[320px]",
           selectorButton: "text-default-500",
         }}

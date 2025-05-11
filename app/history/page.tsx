@@ -109,21 +109,29 @@ export default function Page() {
         </div>
       )}
 
-      <div className="w-full max-w-5xl px-4">
-        <Table isStriped aria-label="Sessions history table">
+      <div className="w-full max-w-5xl px-4 overflow-hidden">
+        <div className="w-full overflow-x-auto">
+          <Table 
+            isStriped 
+            aria-label="Sessions history table"
+            classNames={{
+              wrapper: "min-w-full w-max",
+              table: "min-w-[600px] border-collapse", 
+            }}
+          >
           <TableHeader>
-            <TableColumn>DATE</TableColumn>
-            <TableColumn>PLACE</TableColumn>
-            <TableColumn>YOUR SCORE</TableColumn>
-            <TableColumn>FINAL SCORE</TableColumn>
-            <TableColumn> </TableColumn>
+            <TableColumn className="whitespace-nowrap w-[140px]">DATE</TableColumn>
+            <TableColumn className="whitespace-nowrap w-[200px]">PLACE</TableColumn>
+            <TableColumn className="whitespace-nowrap w-[100px] text-center">YOUR SCORE</TableColumn>
+            <TableColumn className="whitespace-nowrap w-[100px] text-center">FINAL SCORE</TableColumn>
+            <TableColumn className="whitespace-nowrap w-[60px]"> </TableColumn>
           </TableHeader>
           <TableBody>
             <>
               {sessions.map((session) => (
                 <TableRow key={session.id}>
-                  <TableCell>{formatDate(session.date)}</TableCell>
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap">{formatDate(session.date)}</TableCell>
+                  <TableCell className="w-[200px] max-w-[200px] truncate">
                     {session.placeId ? (
                       <Link className="text-blue-500" href={getMapsLink(session)} passHref={true}>
                         {session.name}
@@ -132,11 +140,11 @@ export default function Page() {
                       session.name
                     )}
                   </TableCell>
-                  <TableCell className="font-bold">{getAverage(session, user)}</TableCell>
-                  <TableCell>{getFinalScore(session)}</TableCell>
-                  <TableCell>
+                  <TableCell className="font-bold whitespace-nowrap text-center">{getAverage(session, user)}</TableCell>
+                  <TableCell className="whitespace-nowrap text-center">{getFinalScore(session)}</TableCell>
+                  <TableCell className="whitespace-nowrap">
                     <Link as={`/history/${session.id}`} href="/history/[id]">
-                      <Button color="primary">→</Button>
+                      <Button color="primary" size="sm">→</Button>
                     </Link>
                   </TableCell>
                 </TableRow>
@@ -144,6 +152,7 @@ export default function Page() {
             </>
           </TableBody>
         </Table>
+        </div>
       </div>
     </div>
   );

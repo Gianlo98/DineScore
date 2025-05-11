@@ -98,7 +98,7 @@ export default function ResultsPage() {
     : [];
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center w-full">
       {loading ? (
         <h2 className="text-center text-xl">Loading...</h2>
       ) : session && session.guests.length < session.numberOfGuests ? (
@@ -123,24 +123,28 @@ export default function ResultsPage() {
       ) : Object.entries(averages).length < 3 ? (
         <h2 className="text-center text-xl">Calculating...</h2>
       ) : (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full px-4">
           <h2 className="text-center text-4xl font-bold mb-4">Results</h2>
           <Spacer y={1.5} />
-          <Table
-            isStriped
-            aria-label="Results table"
-            className="min-w-md"
-            style={{ width: "300px" }}
-          >
+          <div className="w-full overflow-hidden">
+            <div className="w-full overflow-x-auto">
+              <Table
+                isStriped
+                aria-label="Results table"
+                classNames={{
+                  wrapper: "min-w-full w-max",
+                  table: "min-w-[300px] max-w-md mx-auto",
+                }}
+              >
             <TableHeader>
-              <TableColumn>AREA</TableColumn>
-              <TableColumn>SCORE</TableColumn>
+              <TableColumn className="whitespace-nowrap w-[180px]">AREA</TableColumn>
+              <TableColumn className="whitespace-nowrap w-[70px] text-center">SCORE</TableColumn>
             </TableHeader>
             <TableBody>
               {QUESTIONS.map(({ key, question }, index) => (
                 <TableRow key={key}>
-                  <TableCell className="font-bold">{question}</TableCell>
-                  <TableCell>
+                  <TableCell className="font-bold whitespace-nowrap">{question}</TableCell>
+                  <TableCell className="text-center">
                     <TextEffect delay={(0 + index) * 5} per="char">
                       {`${averages[key].toFixed(2)}`}
                     </TextEffect>
@@ -148,7 +152,9 @@ export default function ResultsPage() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+              </Table>
+            </div>
+          </div>
 
           {displayIndex >= Object.keys(averages).length && totalAverage !== null && (
             <>
@@ -163,16 +169,20 @@ export default function ResultsPage() {
             <>
               <Spacer y={1.5} />
               <h2 className="text-center text-4xl font-bold mb-4 mt-20">Diners</h2>
-              <Table
-                isStriped
-                aria-label="Leaderboard table"
-                className="min-w-md"
-                style={{ width: "300px" }}
-              >
+              <div className="w-full overflow-hidden">
+                <div className="w-full overflow-x-auto">
+                  <Table
+                    isStriped
+                    aria-label="Leaderboard table"
+                    classNames={{
+                      wrapper: "min-w-full w-max",
+                      table: "min-w-[300px] max-w-md mx-auto",
+                    }}
+                  >
                 <TableHeader>
-                  <TableColumn>Avatar</TableColumn>
-                  <TableColumn>Name</TableColumn>
-                  <TableColumn>Total Score</TableColumn>
+                  <TableColumn className="whitespace-nowrap w-[70px]">Avatar</TableColumn>
+                  <TableColumn className="whitespace-nowrap w-[140px]">Name</TableColumn>
+                  <TableColumn className="whitespace-nowrap w-[90px] text-center">Total Score</TableColumn>
                 </TableHeader>
                 <TableBody>
                   {sortedGuests.map((guest) => {
@@ -184,15 +194,17 @@ export default function ResultsPage() {
                     return (
                       <TableRow key={guest.name}>
                         <TableCell>
-                          <Avatar src={guest.photoURL} />
+                          <Avatar src={guest.photoURL} size="sm" />
                         </TableCell>
-                        <TableCell>{guest.name}</TableCell>
-                        <TableCell>{totalVotes}</TableCell>
+                        <TableCell className="truncate max-w-[140px]">{guest.name}</TableCell>
+                        <TableCell className="text-center">{totalVotes}</TableCell>
                       </TableRow>
                     );
                   })}
                 </TableBody>
-              </Table>
+                  </Table>
+                </div>
+              </div>
             </>
           )}
         </div>

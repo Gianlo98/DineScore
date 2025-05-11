@@ -23,13 +23,13 @@ export const Navbar = () => {
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo />
-            <p className="font-bold text-inherit">DineScore</p>
+            <p className="font-bold text-inherit hidden xs:block">DineScore</p>
           </NextLink>
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent as="div" justify="end">
-        <NavbarItem className="hidden sm:flex gap-2">
+        <NavbarItem className="flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
         {user && (

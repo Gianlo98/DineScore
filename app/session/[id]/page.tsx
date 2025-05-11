@@ -140,7 +140,7 @@ export default function Page() {
       <h1 className="text-3xl font-medium text-center mt-10">{getHeadline()}</h1>
 
       <Form
-        className="w-full max-w-xs flex flex-col gap-4 mx-auto"
+        className="w-full max-w-xs sm:max-w-sm flex flex-col gap-4 mx-auto sm:px-0"
         validationBehavior="native"
         onSubmit={handleSubmit}
       >
@@ -162,11 +162,13 @@ export default function Page() {
         {step > 1 && step <= QUESTIONS.length + 1 && (
           <div className="flex flex-col gap-4 w-full">
             <Spacer y={1} />
-            <div className="flex justify-between gap-2 flex-col">
+            <div className="flex justify-center gap-4 flex-row px-4 sm:px-0">
               {Array.from({ length: 5 }, (_, index) => (
                 <Button
                   key={index + 1}
+                  className="min-w-[48px] h-[48px] rounded-full"
                   color={votes[QUESTIONS[step - 2].key] === index + 1 ? "primary" : "default"}
+                  size="md"
                   onPress={() => {
                     setVotes((prevVotes) => ({
                       ...prevVotes,
@@ -182,46 +184,77 @@ export default function Page() {
           </div>
         )}
         {step === QUESTIONS.length + 2 && (
-          <div className="w-full py-4">
-            <Table isStriped aria-label="Example static collection table">
-              <TableHeader>
-                <TableColumn>AREA</TableColumn>
-                <TableColumn>SCORE</TableColumn>
-              </TableHeader>
-              <TableBody>
-                <>
-                  <TableRow key="meal">
-                    <TableCell className="font-bold">Meal</TableCell>
-                    <TableCell>{meal}</TableCell>
-                  </TableRow>
-                  {QUESTIONS.map((q) => (
-                    <TableRow key={q.key}>
-                      <TableCell className="font-bold">{q.question}</TableCell>
-                      <TableCell>{votes[q.key]}</TableCell>
-                    </TableRow>
-                  ))}
-                </>
-              </TableBody>
-            </Table>
+          <div className="w-full py-4 px-4 sm:px-0">
+            <div className="w-full mb-6">
+              <h3 className="text-lg font-semibold mb-1">🍽️ Your Meal</h3>
+              <Input
+                fullWidth
+                isRequired
+                errorMessage="Please enter a valid pizza"
+                labelPlacement="outside"
+                name="meal"
+                placeholder="Pizza Margherita"
+                type="text"
+                value={meal}
+                onChange={handleInputChange}
+              />
+            </div>
 
-            <Textarea
-              fullWidth
-              className="max-w-xs mt-10"
-              errorMessage="Please enter a valid pizza"
-              label="Personal Note"
-              labelPlacement="outside"
-              name="notes"
-              placeholder="It was a great experience!"
-              type="textarea"
-              value={note}
-              onChange={handleInputChange}
-            />
+            <div className="w-full">
+              <h3 className="text-lg font-semibold mb-1">⭐ Your votes</h3>
+              <div className="w-full">
+                <Table
+                  isStriped
+                  aria-label="Ratings summary table"
+                  classNames={{
+                    wrapper: "min-w-full w-full shadow-none p-0",
+                    table: "w-full",
+                  }}
+                >
+                  <TableHeader>
+                    <TableColumn className="whitespace-nowrap">AREA</TableColumn>
+                    <TableColumn className="whitespace-nowrap text-center">SCORE</TableColumn>
+                  </TableHeader>
+                  <TableBody>
+                    <>
+                      {QUESTIONS.map((q) => (
+                        <TableRow key={q.key}>
+                          <TableCell className="font-bold whitespace-nowrap">
+                            {q.question}
+                          </TableCell>
+                          <TableCell className="whitespace-nowrap text-center">
+                            {votes[q.key]}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+
+            <div className="w-full">
+              <h3 className="text-lg font-semibold mt-6 mb-1">📝 Personal note </h3>
+              <Textarea
+                fullWidth
+                className="w-full"
+                label=""
+                labelPlacement="outside"
+                name="notes"
+                placeholder="It was a great experience!"
+                type="textarea"
+                value={note}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
         )}
-        <div className="flex justify-between gap-2 w-full">
+        <div className="flex justify-between gap-2 w-full px-4 sm:px-0">
           {step > 1 && (
             <Button
+              className="min-w-[80px] sm:min-w-[100px]"
               color="default"
+              size="sm"
               type="button"
               onPress={() => setStep((prevStep) => prevStep - 1)}
             >
@@ -229,12 +262,13 @@ export default function Page() {
             </Button>
           )}
           <Button
-            className="w-full"
+            className={`${step > 1 ? "w-full" : "w-full"} min-w-[80px] sm:min-w-[100px]`}
             color="primary"
+            size="sm"
             type={step === QUESTIONS.length + 2 ? "submit" : "button"}
             onPress={() => step !== QUESTIONS.length + 2 && setStep((prevStep) => prevStep + 1)}
           >
-            {step === QUESTIONS.length + 2 ? "Save" : "Next"}
+            {step === QUESTIONS.length + 2 ? "Submit " : "Next"}
           </Button>
         </div>
       </Form>
