@@ -4,15 +4,19 @@ import { useEffect, useState } from "react";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
+import { Divider } from "@heroui/divider";
 
 import GoogleButton from "./GoogleButton";
+import GoogleMap from "./GoogleMap";
 
-import { title } from "@/components/primitives";
+import { title, subtitle } from "@/components/primitives";
 import { useAuth } from "@/context/authContext";
+import { usePlaces } from "@/hooks/usePlaces";
 
 export default function ProtectedPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { places, isLoading: placesLoading } = usePlaces(user);
 
   const phrases = [
     "🍕 Slice into your journey! sign up now and pile on those tasty scores!",
@@ -38,7 +42,7 @@ export default function ProtectedPage() {
   if (loading) return;
 
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 w-full">
       {user === null ? (
         <>
           <div className="inline-block max-w-xl text-center justify-center">
@@ -47,19 +51,36 @@ export default function ProtectedPage() {
           <GoogleButton />
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center max-w-xl text-center">
-          <Avatar
-            className="w-30 h-30 mb-5"
-            size="lg"
-            src={user.photoURL || undefined}
-          />
-          <span className={title()}>
-            👋 Welcome back, {user.displayName || "User"}!
-          </span>
-          <Button className="mt-5" onPress={() => router.push("/session")}>
-            Start a New Session
-          </Button>
-        </div>
+        <>
+          <div className="flex flex-col items-center justify-center max-w-xl text-center mb-8">
+            <Avatar
+              className="w-30 h-30 mb-5"
+              size="lg"
+              src={user.photoURL || undefined}
+            />
+            <span className={title()}>
+              👋 Welcome back, {user.displayName || "User"}!
+            </span>
+            <Button className="mt-5" onPress={() => router.push("/session")}>
+              Start a New Session
+            </Button>
+          </div>
+          
+          {places.length > 0 && (
+            <div className="w-full max-w-5xl px-4">
+              <Divider className="my-4" />
+              <h2 className={subtitle({ class: "mb-4 text-center" })}>
+                Your Pizza Journey Map
+              </h2>
+              <GoogleMap 
+                places={places} 
+                height="400px" 
+                showInfo={true}
+                initialZoom={11}
+              />
+            </div>
+          )}
+        </>
       )}
     </section>
   );

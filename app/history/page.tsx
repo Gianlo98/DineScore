@@ -11,10 +11,14 @@ import {
 import Link from "next/link";
 import { User } from "@firebase/auth";
 import { Button } from "@heroui/button";
+import { Divider } from "@heroui/divider";
 
 import { useAuth } from "@/context/authContext";
 import { useHistory } from "@/hooks/useHistory";
 import { Session } from "@/types";
+import GoogleMap from "@/components/GoogleMap";
+import { subtitle } from "@/components/primitives";
+import { Place } from "@/components/GoogleMap";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("en-US", {
@@ -70,6 +74,25 @@ function getAverage(session: Session, user: User) {
   return Object.values(userVote.votes).reduce((sum, value) => sum + value, 0);
 }
 
+// Convert sessions to places for the map component
+function getPlacesFromSessions(sessions: Session[]): Place[] {
+  const uniquePlacesMap = new Map<string, Place>();
+  
+  sessions.forEach((session) => {
+    if (session.placeId && !uniquePlacesMap.has(session.placeId)) {
+      uniquePlacesMap.set(session.placeId, {
+        id: session.id || crypto.randomUUID(),
+        name: session.name,
+        placeId: session.placeId
+      });
+    }
+  });
+  
+  const places = Array.from(uniquePlacesMap.values());
+  console.log("Places in history:", places.length, places);
+  return places;
+}
+
 export default function Page() {
   const { user, loading } = useAuth();
   const { sessions, isLoading } = useHistory(user);
@@ -81,10 +104,27 @@ export default function Page() {
     return <div>You need to be logged in to see your history.</div>;
   }
 
+  const places = getPlacesFromSessions(sessions);
+
   return (
-    <>
-      <div className="w-full py-4">
-        <Table isStriped aria-label="Example static collection table">
+    <div className="w-full flex flex-col items-center">
+      {places.length > 0 && (
+        <div className="w-full max-w-5xl px-4 mb-8">
+          <h2 className={subtitle({ class: "mb-4 text-center" })}>
+            Your Pizza Adventure Map
+          </h2>
+          <GoogleMap 
+            places={places} 
+            height="400px" 
+            showInfo={true}
+            initialZoom={11}
+          />
+          <Divider className="my-8" />
+        </div>
+      )}
+      
+      <div className="w-full max-w-5xl px-4">
+        <Table isStriped aria-label="Sessions history table">
           <TableHeader>
             <TableColumn>DATE</TableColumn>
             <TableColumn>PLACE</TableColumn>
@@ -125,6 +165,6 @@ export default function Page() {
           </TableBody>
         </Table>
       </div>
-    </>
+    </div>
   );
 }
