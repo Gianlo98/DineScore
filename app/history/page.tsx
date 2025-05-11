@@ -5,6 +5,8 @@ import Link from "next/link";
 import { User } from "@firebase/auth";
 import { Button } from "@heroui/button";
 import { Divider } from "@heroui/divider";
+import { Card, CardBody, CardFooter } from "@heroui/card";
+import { Chip } from "@heroui/chip";
 
 import { useAuth } from "@/context/authContext";
 import { useHistory } from "@/hooks/useHistory";
@@ -53,8 +55,9 @@ function getFinalScore(session: Session) {
   );
 
   const total = Object.values(averages).reduce((sum, value) => sum + value, 0);
+  const avg = total / Object.keys(averages).length;
 
-  return total;
+  return avg;
 }
 
 function getAverage(session: Session, user: User) {
@@ -109,7 +112,8 @@ export default function Page() {
         </div>
       )}
 
-      <div className="w-full max-w-5xl px-4 overflow-hidden">
+      {/* Desktop view - Table */}
+      <div className="w-full max-w-5xl px-4 overflow-hidden hidden md:block">
         <div className="w-full overflow-x-auto">
           <Table
             isStriped
@@ -148,11 +152,19 @@ export default function Page() {
                       {getAverage(session, user)}
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-center">
-                      {getFinalScore(session)}
+                      {getFinalScore(session) ? getFinalScore(session)!.toFixed(1) : '-'}
                     </TableCell>
-                    <TableCell className="whitespace-nowrap">
-                      <Link href={`/session/${session.id}/results?from=history`}>
-                        <Button color="primary" size="sm">
+                    <TableCell className="whitespace-nowrap text-center">
+                      <Link
+                        className="inline-block"
+                        href={`/session/${session.id}/results?from=history`}
+                      >
+                        <Button
+                          className="min-w-[40px] min-h-[40px] touch-manipulation"
+                          color="primary"
+                          radius="full"
+                          size="sm"
+                        >
                           →
                         </Button>
                       </Link>
@@ -162,6 +174,60 @@ export default function Page() {
               </>
             </TableBody>
           </Table>
+        </div>
+      </div>
+      
+      {/* Mobile view - Cards */}
+      <div className="w-full max-w-5xl px-4 md:hidden">
+        <div className="grid grid-cols-1 gap-4">
+          {sessions.map((session) => {
+            const finalScore = getFinalScore(session);
+            let scoreColor = "default";
+            
+            if (finalScore) {
+              if (finalScore >= 4) scoreColor = "success";
+              else if (finalScore >= 3) scoreColor = "primary";
+              else if (finalScore >= 2) scoreColor = "warning";
+              else scoreColor = "danger";
+            }
+            
+            return (
+              <Card key={session.id} className="w-full shadow-sm">
+                <CardBody className="py-3">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex-1">
+                      <p className="text-xs text-default-500">{formatDate(session.date)}</p>
+                      <h3 className="text-lg font-semibold mt-1 line-clamp-1">
+                        {session.placeId ? (
+                          <Link href={getMapsLink(session)} passHref={true}>
+                            {session.name}
+                          </Link>
+                        ) : (
+                          session.name
+                        )}
+                      </h3>
+                    </div>
+                    {finalScore && (
+                      <Chip color={scoreColor} variant="flat" className="ml-2">
+                        {finalScore.toFixed(1)}
+                      </Chip>
+                    )}
+                  </div>
+                </CardBody>
+                <CardFooter className="pt-0 pb-3">
+                  <Button 
+                    as={Link}
+                    href={`/session/${session.id}/results?from=history`}
+                    className="w-full min-h-[50px] touch-manipulation"
+                    color="primary"
+                    variant="flat"
+                  >
+                    View Details
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </div>

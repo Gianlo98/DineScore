@@ -436,21 +436,27 @@ export default function ResultsPage() {
               }}
             >
               <h3 className="text-xl font-semibold mb-3">Diners</h3>
-              <div className="w-full overflow-hidden">
-                <div className="w-full overflow-x-auto">
+              <div className="w-full overflow-hidden rounded-md">
+                <div className="w-full overflow-x-auto touch-pan-x">
                   <Table
                     isStriped
                     aria-label="Leaderboard table"
                     classNames={{
                       wrapper: "min-w-full w-max",
-                      table: "min-w-[300px] w-full",
+                      table: "w-full",
+                      th: "py-3 px-2",
+                      td: "py-3 px-2",
                     }}
                   >
                     <TableHeader>
-                      <TableColumn className="whitespace-nowrap w-[70px]">Avatar</TableColumn>
-                      <TableColumn className="whitespace-nowrap w-[140px]">Name</TableColumn>
-                      <TableColumn className="whitespace-nowrap w-[90px] text-center">
-                        Total Score
+                      <TableColumn className="whitespace-nowrap w-14 sm:w-[70px]">
+                        Avatar
+                      </TableColumn>
+                      <TableColumn className="whitespace-nowrap w-24 sm:w-[140px]">
+                        Name
+                      </TableColumn>
+                      <TableColumn className="whitespace-nowrap w-20 sm:w-[90px] text-center">
+                        Score
                       </TableColumn>
                     </TableHeader>
                     <TableBody>
@@ -464,12 +470,19 @@ export default function ResultsPage() {
 
                           return (
                             <TableRow key={idx} className="hover:bg-gray-50">
-                              <TableCell key={`avatar-${idx}`} className="w-[70px]">
+                              <TableCell className="w-14 sm:w-[70px] py-3">
                                 <Avatar size="sm" src={guest.photoURL} />
                               </TableCell>
-                              <TableCell className="truncate max-w-[140px]">{guest.name}</TableCell>
-                              <TableCell className="text-center">
-                                <Chip color={getRatingColor(avgScore)} size="sm" variant="flat">
+                              <TableCell className="truncate max-w-[100px] sm:max-w-[140px] py-3">
+                                {guest.name}
+                              </TableCell>
+                              <TableCell className="text-center py-3">
+                                <Chip
+                                  className="min-h-[28px]"
+                                  color={getRatingColor(avgScore)}
+                                  size="sm"
+                                  variant="flat"
+                                >
                                   {avgScore.toFixed(1)}
                                 </Chip>
                               </TableCell>

@@ -50,15 +50,22 @@ export const Navbar = () => {
                 <p className="font-semibold">Signed in as</p>
                 <p className="font-semibold">{user.displayName}</p>
               </DropdownItem>
-              <DropdownItem key="session">
-                <NextLink className="flex justify-start items-center gap-1" href="/session">
-                  <p className="font-bold text-inherit"> Start a new session</p>
-                </NextLink>
+              <DropdownItem
+                key="session"
+                as="a"
+                href="/session"
+                className="w-full cursor-pointer"
+              >
+                <span className="font-bold"> Start a new session</span>
               </DropdownItem>
-              <DropdownItem key="team_settings" showDivider={true}>
-                <NextLink className="flex justify-start items-center gap-1" href="/history">
-                  <p className="font-bold text-inherit"> My votes</p>
-                </NextLink>
+              <DropdownItem
+                key="history"
+                as="a"
+                href="/history"
+                className="w-full cursor-pointer"
+                showDivider={true}
+              >
+                <span className="font-bold"> My votes</span>
               </DropdownItem>
               <DropdownItem key="logout" color="danger" onPress={handleSignOut}>
                 Log Out

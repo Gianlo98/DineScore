@@ -162,13 +162,14 @@ export default function Page() {
         {step > 1 && step <= QUESTIONS.length + 1 && (
           <div className="flex flex-col gap-4 w-full">
             <Spacer y={1} />
-            <div className="flex justify-center gap-4 flex-row px-4 sm:px-0">
+            <div className="flex justify-center gap-3 sm:gap-4 flex-row px-4 sm:px-0">
               {Array.from({ length: 5 }, (_, index) => (
                 <Button
                   key={index + 1}
-                  className="min-w-[48px] h-[48px] rounded-full"
+                  className="min-w-[60px] h-[60px] touch-manipulation"
                   color={votes[QUESTIONS[step - 2].key] === index + 1 ? "primary" : "default"}
-                  size="md"
+                  radius="full"
+                  size="lg"
                   onPress={() => {
                     setVotes((prevVotes) => ({
                       ...prevVotes,
@@ -177,7 +178,7 @@ export default function Page() {
                     setStep((prevStep) => prevStep + 1); // Move to the next step
                   }}
                 >
-                  {index + 1}
+                  <span className="text-lg font-bold">{index + 1}</span>
                 </Button>
               ))}
             </div>
@@ -249,12 +250,12 @@ export default function Page() {
             </div>
           </div>
         )}
-        <div className="flex justify-between gap-2 w-full px-4 sm:px-0">
+        <div className="flex justify-between gap-2 w-full px-4 sm:px-0 mt-4">
           {step > 1 && (
             <Button
-              className="min-w-[80px] sm:min-w-[100px]"
+              className="min-w-[100px] min-h-[44px] touch-manipulation"
               color="default"
-              size="sm"
+              size="md"
               type="button"
               onPress={() => setStep((prevStep) => prevStep - 1)}
             >
@@ -262,13 +263,13 @@ export default function Page() {
             </Button>
           )}
           <Button
-            className={`${step > 1 ? "w-full" : "w-full"} min-w-[80px] sm:min-w-[100px]`}
+            className={`${step > 1 ? "flex-1" : "w-full"} min-h-[44px] touch-manipulation`}
             color="primary"
-            size="sm"
+            size="md"
             type={step === QUESTIONS.length + 2 ? "submit" : "button"}
             onPress={() => step !== QUESTIONS.length + 2 && setStep((prevStep) => prevStep + 1)}
           >
-            {step === QUESTIONS.length + 2 ? "Submit " : "Next"}
+            {step === QUESTIONS.length + 2 ? "Submit" : "Next"}
           </Button>
         </div>
       </Form>
