@@ -15,6 +15,8 @@ import { Session } from "@/types";
 import { db } from "@/firebase/firebaseConfig";
 import { SESSION_COLLECTION } from "@/config/firebaseStorage";
 import { QUESTIONS } from "@/config/questions";
+import { getScoreColor, getScoreRating, getMedalTheme } from "@/lib/score-utils";
+import { MedalBadge } from "@/components/MedalBadge";
 
 // SVG laurel branches for decorating the final score
 const LeftLaurelBranch = ({ colorClass = "text-amber-500" }) => (
@@ -169,52 +171,8 @@ export default function ResultsPage() {
       })
     : [];
 
-  // Function to get the rating color based on score
-  const getRatingColor = (score: number) => {
-    if (score >= 4.5) return "success";
-    if (score >= 3.5) return "primary";
-    if (score >= 2.5) return "warning";
-
-    return "danger";
-  };
-
-  // Function to get the rating text based on score
-  const getRatingText = (score: number) => {
-    if (score >= 4.5) return "Excellent";
-    if (score >= 3.5) return "Good";
-    if (score >= 2.5) return "Average";
-    if (score >= 1.5) return "Poor";
-
-    return "Bad";
-  };
-
-  // Function to get the medal theme based on score
-  const getMedalTheme = (score: number) => {
-    if (score >= 4)
-      return {
-        background: "bg-gradient-to-br from-amber-50 to-amber-100",
-        border: "border-amber-200",
-        text: "text-amber-900",
-        score: "text-amber-800",
-        laurel: "text-amber-500",
-      };
-    if (score >= 3)
-      return {
-        background: "bg-gradient-to-br from-slate-50 to-slate-200",
-        border: "border-slate-300",
-        text: "text-slate-900",
-        score: "text-slate-800",
-        laurel: "text-slate-400",
-      };
-
-    return {
-      background: "bg-gradient-to-br from-orange-50 to-orange-100",
-      border: "border-orange-200",
-      text: "text-orange-900",
-      score: "text-orange-800",
-      laurel: "text-orange-400",
-    };
-  };
+  // Using the standardized scoring utils from lib/score-utils.ts
+  // for consistent colors across the application
 
   // Calculate partial average based on displayed categories
   const getPartialAverage = () => {
@@ -366,10 +324,10 @@ export default function ResultsPage() {
                             >
                               <Chip
                                 className="mt-2"
-                                color={getRatingColor(displayedScore || 0)}
+                                color={getScoreColor(displayedScore || 0)}
                                 variant="flat"
                               >
-                                {getRatingText(displayedScore || 0)}
+                                {getScoreRating(displayedScore || 0)}
                               </Chip>
                             </motion.div>
                           )}
@@ -412,9 +370,7 @@ export default function ResultsPage() {
                           initial={{ scale: 0.8, opacity: 0 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <Chip color={getRatingColor(averages[key])} size="sm" variant="flat">
-                            {averages[key].toFixed(1)}
-                          </Chip>
+                          <MedalBadge score={averages[key]} size="sm" />
                         </motion.div>
                       </div>
                     </CardBody>
@@ -477,14 +433,7 @@ export default function ResultsPage() {
                                 {guest.name}
                               </TableCell>
                               <TableCell className="text-center py-3">
-                                <Chip
-                                  className="min-h-[28px]"
-                                  color={getRatingColor(avgScore)}
-                                  size="sm"
-                                  variant="flat"
-                                >
-                                  {avgScore.toFixed(1)}
-                                </Chip>
+                                <MedalBadge score={avgScore} size="sm" />
                               </TableCell>
                             </TableRow>
                           );

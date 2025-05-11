@@ -4,10 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { Card, CardBody } from "@heroui/card";
 import { Spinner } from "@heroui/spinner";
 
+import { getMapMarkerColor } from "@/lib/score-utils";
+
 export interface Place {
   id: string;
   name: string;
   placeId: string;
+  score?: number;
 }
 
 interface GoogleMapProps {
@@ -135,15 +138,20 @@ export default function GoogleMap({
     const bounds = new google.maps.LatLngBounds();
     const placesService = new google.maps.places.PlacesService(map);
 
-    // Create custom pizza marker icon
-    const customIcon = {
-      path: "M 0,0 m -12,-12 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0", // Circle
-      fillColor: "#FF9933", // Pizza color
-      fillOpacity: 1,
-      strokeWeight: 2,
-      strokeColor: "#CC3300", // Crust color
-      scale: 1,
-      labelOrigin: new google.maps.Point(0, 0),
+    // Create custom pizza marker icon with color based on score
+    const getCustomIcon = (score?: number) => {
+      // Default color if no score is provided
+      const fillColor = score !== undefined ? getMapMarkerColor(score) : "#FF9933";
+
+      return {
+        path: "M 0,0 m -12,-12 a 12,12 0 1,0 24,0 a 12,12 0 1,0 -24,0", // Circle
+        fillColor: fillColor,
+        fillOpacity: 1,
+        strokeWeight: 2,
+        strokeColor: "#FFFFFF", // White border
+        scale: 1,
+        labelOrigin: new google.maps.Point(0, 0),
+      };
     };
 
     // Track if component is mounted to prevent state updates after unmounting
@@ -187,7 +195,7 @@ export default function GoogleMap({
                 map,
                 title: placeDetails.name || place.name,
                 animation: google.maps.Animation.DROP,
-                icon: customIcon,
+                icon: getCustomIcon(place.score),
               });
 
               markersToCleanup.push(marker);
@@ -198,6 +206,13 @@ export default function GoogleMap({
                     <div style="padding: 8px;">
                       <h3 style="margin: 0 0 8px; font-weight: bold;">${placeDetails.name || place.name}</h3>
                       <p style="margin: 0;">${placeDetails.formatted_address || ""}</p>
+                      ${
+                        place.score
+                          ? `<p style="margin: 4px 0 0; font-weight: bold; color: ${getMapMarkerColor(place.score)}">
+                        Score: ${place.score.toFixed(1)}
+                      </p>`
+                          : ""
+                      }
                     </div>
                   `,
                 });

@@ -6,8 +6,8 @@ import { User } from "@firebase/auth";
 import { Button } from "@heroui/button";
 import { Divider } from "@heroui/divider";
 import { Card, CardBody, CardFooter } from "@heroui/card";
-import { Chip } from "@heroui/chip";
 
+import { MedalBadge } from "@/components/MedalBadge";
 import { useAuth } from "@/context/authContext";
 import { useHistory } from "@/hooks/useHistory";
 import { Session } from "@/types";
@@ -75,12 +75,28 @@ function getPlacesFromSessions(sessions: Session[]): Place[] {
   const uniquePlacesMap = new Map<string, Place>();
 
   sessions.forEach((session) => {
-    if (session.placeId && !uniquePlacesMap.has(session.placeId)) {
-      uniquePlacesMap.set(session.placeId, {
-        id: session.id || crypto.randomUUID(),
-        name: session.name,
-        placeId: session.placeId,
-      });
+    if (session.placeId) {
+      const finalScore = getFinalScore(session);
+
+      // Update existing map entry if one exists, otherwise create new
+      if (uniquePlacesMap.has(session.placeId)) {
+        const existing = uniquePlacesMap.get(session.placeId)!;
+
+        // Keep the highest score for places with multiple visits
+        if (finalScore && (!existing.score || finalScore > existing.score)) {
+          uniquePlacesMap.set(session.placeId, {
+            ...existing,
+            score: finalScore,
+          });
+        }
+      } else {
+        uniquePlacesMap.set(session.placeId, {
+          id: session.id || crypto.randomUUID(),
+          name: session.name,
+          placeId: session.placeId,
+          score: finalScore,
+        });
+      }
     }
   });
 
@@ -152,7 +168,13 @@ export default function Page() {
                       {getAverage(session, user)}
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-center">
-                      {getFinalScore(session) ? getFinalScore(session)!.toFixed(1) : '-'}
+                      {getFinalScore(session) ? (
+                        <div className="flex justify-center">
+                          <MedalBadge score={getFinalScore(session)!} size="sm" />
+                        </div>
+                      ) : (
+                        "-"
+                      )}
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-center">
                       <Link
@@ -176,21 +198,13 @@ export default function Page() {
           </Table>
         </div>
       </div>
-      
+
       {/* Mobile view - Cards */}
       <div className="w-full max-w-5xl px-4 md:hidden">
         <div className="grid grid-cols-1 gap-4">
           {sessions.map((session) => {
             const finalScore = getFinalScore(session);
-            let scoreColor = "default";
-            
-            if (finalScore) {
-              if (finalScore >= 4) scoreColor = "success";
-              else if (finalScore >= 3) scoreColor = "primary";
-              else if (finalScore >= 2) scoreColor = "warning";
-              else scoreColor = "danger";
-            }
-            
+
             return (
               <Card key={session.id} className="w-full shadow-sm">
                 <CardBody className="py-3">
@@ -207,19 +221,15 @@ export default function Page() {
                         )}
                       </h3>
                     </div>
-                    {finalScore && (
-                      <Chip color={scoreColor} variant="flat" className="ml-2">
-                        {finalScore.toFixed(1)}
-                      </Chip>
-                    )}
+                    {finalScore && <MedalBadge score={finalScore} />}
                   </div>
                 </CardBody>
                 <CardFooter className="pt-0 pb-3">
-                  <Button 
+                  <Button
                     as={Link}
-                    href={`/session/${session.id}/results?from=history`}
                     className="w-full min-h-[50px] touch-manipulation"
                     color="primary"
+                    href={`/session/${session.id}/results?from=history`}
                     variant="flat"
                   >
                     View Details

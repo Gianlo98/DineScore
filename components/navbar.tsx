@@ -50,19 +50,14 @@ export const Navbar = () => {
                 <p className="font-semibold">Signed in as</p>
                 <p className="font-semibold">{user.displayName}</p>
               </DropdownItem>
-              <DropdownItem
-                key="session"
-                as="a"
-                href="/session"
-                className="w-full cursor-pointer"
-              >
+              <DropdownItem key="session" as="a" className="w-full cursor-pointer" href="/session">
                 <span className="font-bold"> Start a new session</span>
               </DropdownItem>
               <DropdownItem
                 key="history"
                 as="a"
-                href="/history"
                 className="w-full cursor-pointer"
+                href="/history"
                 showDivider={true}
               >
                 <span className="font-bold"> My votes</span>
