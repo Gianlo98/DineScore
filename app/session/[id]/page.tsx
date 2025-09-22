@@ -178,7 +178,11 @@ export default function Page() {
           <div className="flex flex-col gap-4 w-full">
             <Spacer y={1} />
             <div className="px-4 sm:px-0">
-              <Dropdown>
+              <Dropdown
+                classNames={{
+                  content: "min-w-[200px] max-h-60 overflow-y-auto",
+                }}
+              >
                 <DropdownTrigger>
                   <Button className="w-full justify-between" variant="bordered">
                     {votes[QUESTIONS[step - 2].key] !== -1
@@ -188,6 +192,10 @@ export default function Page() {
                 </DropdownTrigger>
                 <DropdownMenu
                   aria-label="Rating selection"
+                  className="max-h-60 overflow-y-auto"
+                  itemClasses={{
+                    base: "data-[hover=true]:bg-default-100 data-[selectable=true]:focus:bg-default-100 data-[focus-visible=true]:ring-2 data-[focus-visible=true]:ring-focus data-[focus-visible=true]:ring-offset-2",
+                  }}
                   onAction={(key) => {
                     const selectedValue = key as string;
 
