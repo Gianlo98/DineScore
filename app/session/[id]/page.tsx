@@ -9,6 +9,7 @@ import { Button } from "@heroui/button";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { Textarea } from "@heroui/input";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/dropdown";
 
 import { Guest, GuestVote } from "@/types";
 import { useAuth } from "@/context/authContext";
@@ -32,6 +33,20 @@ export default function Page() {
     ingredients: -1,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const generateRatingOptions = () => {
+    const options = [];
+
+    for (let i = 1; i <= 5; i += 0.25) {
+      options.push({
+        key: i.toString(),
+        label: i.toFixed(2),
+        value: i,
+      });
+    }
+
+    return options;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (step === 1) {
@@ -162,25 +177,31 @@ export default function Page() {
         {step > 1 && step <= QUESTIONS.length + 1 && (
           <div className="flex flex-col gap-4 w-full">
             <Spacer y={1} />
-            <div className="flex justify-center gap-3 sm:gap-4 flex-row px-4 sm:px-0">
-              {Array.from({ length: 5 }, (_, index) => (
-                <Button
-                  key={index + 1}
-                  className="min-w-[60px] h-[60px] touch-manipulation"
-                  color={votes[QUESTIONS[step - 2].key] === index + 1 ? "primary" : "default"}
-                  radius="full"
-                  size="lg"
-                  onPress={() => {
+            <div className="px-4 sm:px-0">
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button className="w-full justify-between" variant="bordered">
+                    {votes[QUESTIONS[step - 2].key] !== -1
+                      ? votes[QUESTIONS[step - 2].key].toFixed(2)
+                      : "Choose a rating from 1.00 to 5.00"}
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Rating selection"
+                  onAction={(key) => {
+                    const selectedValue = key as string;
+
                     setVotes((prevVotes) => ({
                       ...prevVotes,
-                      [QUESTIONS[step - 2].key]: index + 1,
+                      [QUESTIONS[step - 2].key]: parseFloat(selectedValue),
                     }));
-                    setStep((prevStep) => prevStep + 1); // Move to the next step
                   }}
                 >
-                  <span className="text-lg font-bold">{index + 1}</span>
-                </Button>
-              ))}
+                  {generateRatingOptions().map((option) => (
+                    <DropdownItem key={option.key}>{option.label}</DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
             </div>
           </div>
         )}
@@ -265,6 +286,9 @@ export default function Page() {
           <Button
             className={`${step > 1 ? "flex-1" : "w-full"} min-h-[44px] touch-manipulation`}
             color="primary"
+            isDisabled={
+              step > 1 && step <= QUESTIONS.length + 1 && votes[QUESTIONS[step - 2].key] === -1
+            }
             size="md"
             type={step === QUESTIONS.length + 2 ? "submit" : "button"}
             onPress={() => step !== QUESTIONS.length + 2 && setStep((prevStep) => prevStep + 1)}
